@@ -1,21 +1,15 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
-AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS])
+AC_PREREQ([2.63])
+AC_INIT([csv2odbc], [0.6.1], [two.oes@gmail.com])
+AM_INIT_AUTOMAKE(csv2odbc, 2.6)
 AC_CONFIG_SRCDIR([src/csv2odbc.c])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_INSTALL
 
-# Checks for libraries.
 
-# Checks for header files.
-AC_CHECK_HEADERS([stdlib.h string.h strings.h unistd.h])
-
-# Checks for typedefs, structures, and compiler characteristics.
-
-# Checks for library functions.
-
-AC_OUTPUT
+AC_OUTPUT(Makefile src/Makefile)
