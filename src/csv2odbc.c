@@ -3,6 +3,7 @@
 #include <strings.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "libcsvtools.h"
 
 void Help() {
 
@@ -72,6 +73,7 @@ int main(int argc,char *argv[]) {
 		fprintf(stderr,"missing target table name\n");
 	else if (getenv("C2OTABLENAME"))
 			tname = getenv("C2OTABLENAME");
-		
+	
+	 Print_csvtools();
 	return 0;
 }

@@ -1,3 +1,5 @@
+#include "libcsvtools.h"
+#include <stdio.h>
 /* 
  * int csvobjnum(cahr * csvLine) 
  * check for the amont of objects on the line
@@ -11,3 +13,8 @@
  * returns an array of string which contains the works for the line without the delimiter
  *
  */
+
+int Print_csvtools()
+{
+	printf("you are working with csvtools\n");
+}

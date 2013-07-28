@@ -11,3 +11,10 @@
  * returns an array of string which contains the works for the line without the delimiter
  *
  */
+
+#ifndef LIBCSVTOOLS_H_INCLUDED
+#define LIBCSVTOOLS_H_INCLUDED
+
+int Print_csvtools();
+
+#endif
