@@ -10,6 +10,12 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
 
+/* Define to 1 if you have the <sqlext.h> header file. */
+#define HAVE_SQLEXT_H 1
+
+/* Define to 1 if you have the <sql.h> header file. */
+#define HAVE_SQL_H 1
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
 
@@ -66,4 +72,4 @@
 #define USE_ODBC_H 1
 
 /* Version number of package */
-#define VERSION "2.6"
+#define VERSION "0.0.3"

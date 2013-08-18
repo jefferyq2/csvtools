@@ -6,6 +6,7 @@ if USE_ODBC_H
 bin_PROGRAMS = csv2odbc
 csv2odbc_SOURCES = csv2odbc.c 
 csv2odbc_CFLAGS = -I$(top_srcdir)/include
-csv2odbc_LDFLAGS = -all-static
+# csv2odbc_LDFLAGS = -all-static -lodbc
+csv2odbc_LDFLAGS = -lodbc
 csv2odbc_LDADD = ../lib/libcsvtools.la
 endif

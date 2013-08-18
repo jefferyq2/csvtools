@@ -1,1 +1,1 @@
-include_HEADERS = libcsvtools.h
+include_HEADERS = csvtools.h
