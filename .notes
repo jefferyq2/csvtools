@@ -1,0 +1,19 @@
+
+1) first checking the command line arguments
+
+2) checking the environment variables
+
+3) connection to the database
+
+4) checking for the table, if the table does not existed then return an error code
+
+5) checking if the source if a file or the STDIN
+
+6) checking the first line for the fields name and if it maches the fields
+   name if the table
+
+7) checking each line and if it competable then the line is been inserted to the database
+
+8) when the application is finished closing the file and the database connection
+
+9) the command has a check mode in which the file is been test for CSV RFC competability
