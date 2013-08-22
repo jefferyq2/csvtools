@@ -19,9 +19,9 @@ const void Print_csvtools();
 
 void chomp(char* s);
 
-const int csvquotation(char* csvLine);
+//const int csvquotation(char* csvLine);
 
-const int csvobjnum(char *csvLine,char delimiter);
+const int csvobjnum(char *csvLine,char delimiter,int* quotation_val);
 
 void nospaces(char* csvLine);
 

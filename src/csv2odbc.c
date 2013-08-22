@@ -12,6 +12,34 @@
 
 #define MAX_LENGTH 2048
 
+
+int firstlinetst (char* firstLine,int vopt,char col_seperator,int *quot_val) {
+ 	int colnum=0;
+	nospaces(firstLine);
+		
+               if(vopt == 1)
+                     printf("this is the first line\n");
+
+
+                        if (col_seperator != ',') {
+                                colnum = csvobjnum(firstLine,col_seperator,quot_val);
+                                rplccomma(firstLine,col_seperator);
+                        }
+
+                        else {
+                                colnum = csvobjnum(firstLine,',',quot_val);
+                        }
+
+                        printf("the value of quot_val is %d\n",*quot_val);
+
+                        if(*quot_val == 1) {
+                                fprintf(stderr,"error, you have oded quotation marks in the first row\n");
+                                exit(4);
+                        }
+	return colnum;
+
+}
+
 void Help() {
 
 	printf("Usage:  csv2odbc\n");
@@ -28,9 +56,11 @@ void Help() {
 int main(int argc,char *argv[]) {
 
 	int c=0,dopt=0,topt=0,fopt=0,vopt=0;
+	int quot_val=0;
 	FILE *ifile = NULL;
 	char *dname = NULL,buff[MAX_LENGTH];
 	char *tname=NULL,*sql_q=NULL;
+	char *col_stmt=NULL;
 	char col_seperator=',';
 	char *lenbuff=NULL;
 	int linenum=0,colnum=0;
@@ -41,14 +71,18 @@ int main(int argc,char *argv[]) {
 	SQLRETURN ret;
 	SQLRETURN sql_ret;
 	
-	 while ((c = getopt (argc, argv, "hs:vf:d:t:")) != -1)
+	 while ((c = getopt (argc, argv, "hs:vf:d:t:c:")) != -1)
 		switch (c) {
 
 			case 'h':
 				Help();
 				exit(0);
 			break;
-			
+
+			case 'c':
+				col_stmt = optarg;
+			break;
+
 			case 's':
 				 col_seperator = optarg[0];
 			break;
@@ -97,6 +131,7 @@ int main(int argc,char *argv[]) {
 
 	if ((!getenv("C2ODSNAME")) && (!dname)) {
 		fprintf(stderr,"missing target DS name\n");
+		Help();
 		exit(3);
 	}
 	else if (getenv("C2ODSNAME"))
@@ -104,6 +139,7 @@ int main(int argc,char *argv[]) {
 
 	if ((!getenv("C2OTABLENAME")) && (!tname)) {
 		fprintf(stderr,"missing target table name\n");
+		Help();
 		exit(2);
 	}
 	else if (getenv("C2OTABLENAME"))
@@ -144,6 +180,28 @@ int main(int argc,char *argv[]) {
 			printf("listening to STDIN for input\n");
 	}
 
+	// checking if the columns names are from the -c option
+	
+	if (col_stmt != NULL) {
+		colnum = firstlinetst(col_stmt,vopt,col_seperator,&quot_val);
+		sql_q = (char *)malloc(sizeof(sql_q) * ( strlen(tname) * strlen(col_stmt)));
+                strncpy(sql_q,"select ",sizeof(sql_q));
+                strcat(sql_q,col_stmt);
+                strcat(sql_q," from ");
+                strcat(sql_q,tname);
+                strcat(sql_q," limit 1");
+	
+		sql_ret = SQLExecDirect(stmt, sql_q , SQL_NTS);
+                     if (!SQL_SUCCEEDED(sql_ret)) {
+                             fprintf(stderr,"problem with the first row of the clumns names\n");
+                              exit(7);
+                     }
+                     if(vopt == 1)
+                             printf("the clumns are consistant with the table\n");
+
+                     if(vopt == 1)
+                             printf("the columns count is %d\n",colnum);
+	}
 
 	while( ((fgets(buff,MAX_LENGTH,ifile)) != NULL) ) {
 
@@ -155,33 +213,17 @@ int main(int argc,char *argv[]) {
 		// handling the first line to extract the columns names 
 		// from the CSV file
 		
-		if (linenum == 0) {
+		if ( (linenum == 0) && (col_stmt == NULL)) {
 
-			nospaces(buff);
-	
-			if(vopt == 1)
-				printf("this is the first line\n");
+			colnum = firstlinetst(buff,vopt,col_seperator,&quot_val);
+			col_stmt = buff;
+			sql_q = (char *)malloc(sizeof(sql_q) * ( strlen(tname) * strlen(col_stmt)));
+	                strncpy(sql_q,"select ",sizeof(sql_q));
+        	        strcat(sql_q,col_stmt);
+                	strcat(sql_q," from ");
+                 	strcat(sql_q,tname);
+                	strcat(sql_q," limit 1");
 
-			if(csvquotation(buff) == 1) {
-				fprintf(stderr,"error, you have oded quotation marks in the first row\n");
-				exit(4);
-			}
-			if (col_seperator != ',') {
-				colnum = csvobjnum(buff,col_seperator);
-				rplccomma(buff,col_seperator);
-			}
-
-			else {
-				colnum = csvobjnum(buff,',');
-			}
-
-			sql_q = (char *)malloc(sizeof(sql_q) * ( strlen(tname) * strlen(buff)));
-			strncpy(sql_q,"select ",sizeof(sql_q));
-			strcat(sql_q,buff);
-                        strcat(sql_q," from ");
-       	                strcat(sql_q,tname);
-               	        strcat(sql_q," limit 1");
-			
 			sql_ret = SQLExecDirect(stmt, sql_q , SQL_NTS);
                        	if (!SQL_SUCCEEDED(sql_ret)) {
                                	fprintf(stderr,"problem with the first row of the clumns names\n");
@@ -194,6 +236,7 @@ int main(int argc,char *argv[]) {
 				printf("the columns count is %d\n",colnum);
 
 		}
+
 		if(vopt == 1)
 			printf("%s\n",buff);
 		linenum++;

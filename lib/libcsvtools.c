@@ -27,7 +27,7 @@ void chomp(char *s)
 	setbuf(stdin,NULL);
 }
 
-const int csvquotation(char* csvLine) {
+/* const int csvquotation(char* csvLine) {
 
 	int quotation_val=0;
 	int i=0;
@@ -41,14 +41,22 @@ const int csvquotation(char* csvLine) {
 	}
 
 	return quotation_val;
-}
+} */
 
-const int csvobjnum(char *csvLine,char delimiter) {
+const int csvobjnum(char *csvLine,char delimiter,int *quotation_val) {
 	int i=0,objnum=0;
-	
-	for (i=0;i<(strlen(csvLine)-1);i++)
-		if (csvLine[i]==delimiter)
+	*quotation_val=0;
+	for (i=0;i<(strlen(csvLine)-1);i++) {
+		if((csvLine[i] == '\"') || (csvLine[i] == '\'')) {
+                        if(*quotation_val == 0)
+                                *quotation_val=1;
+                        else if (*quotation_val == 1)
+                                *quotation_val=0;
+                }
+
+		if ((csvLine[i]==delimiter) && (*quotation_val == 0))
 			objnum++;
+	}
 	return objnum;
 }
 
