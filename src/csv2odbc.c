@@ -17,10 +17,6 @@ int firstlinetst (char* firstLine,int vopt,char col_seperator,int *quot_val) {
  	int colnum=0;
 	nospaces(firstLine);
 		
-               if(vopt == 1)
-                     printf("this is the first line\n");
-
-
                         if (col_seperator != ',') {
                                 colnum = csvobjnum(firstLine,col_seperator,quot_val);
                                 rplccomma(firstLine,col_seperator);
@@ -30,12 +26,14 @@ int firstlinetst (char* firstLine,int vopt,char col_seperator,int *quot_val) {
                                 colnum = csvobjnum(firstLine,',',quot_val);
                         }
 
-                        printf("the value of quot_val is %d\n",*quot_val);
-
                         if(*quot_val == 1) {
                                 fprintf(stderr,"error, you have oded quotation marks in the first row\n");
                                 exit(4);
                         }
+
+	if(vopt == 1)
+		printf("the number of columns is : %d \n",colnum);
+
 	return colnum;
 
 }
@@ -48,18 +46,41 @@ void Help() {
 	printf("\t\t -h - Display this manu\n");
 	printf("\t\t -f - set The CSV file to read from (Default stdin)\n");
 	printf("\t\t -d - DSN name - set by the odbc.ini file\n");
+	printf("\t\t -c - Column's names - set the columns name (Defualt: First Line)\n");
 	printf("\t\t -t - Destantion Table Name\n");
 	printf("\n");
 
 }
 
+void tablecheck(char *col_stmt,char *tname,SQLRETURN sql_ret,SQLHSTMT stmt, int vopt) {
+	
+char *tsql_q;
+
+	tsql_q = (char *)malloc(sizeof(tsql_q) * ( strlen(tname) * strlen(col_stmt)));
+        strncpy(tsql_q,"select ",sizeof(tsql_q));
+        strcat(tsql_q,col_stmt);
+        strcat(tsql_q," from ");
+        strcat(tsql_q,tname);
+        strcat(tsql_q," limit 1");
+
+        sql_ret = SQLExecDirect(stmt, tsql_q , SQL_NTS);
+		if (!SQL_SUCCEEDED(sql_ret)) {
+			fprintf(stderr,"problem with the first row of the clumns names\n");
+			exit(7);
+		}
+		if(vopt == 1)
+			printf("the clumns are consistant with the table\n");
+
+}
+
 int main(int argc,char *argv[]) {
 
-	int c=0,dopt=0,topt=0,fopt=0,vopt=0;
-	int quot_val=0;
+	int c=0,exline=0,rcode=0,fopt=0,vopt=0;
+	int quot_val=0,i=0,k=0;
 	FILE *ifile = NULL;
 	char *dname = NULL,buff[MAX_LENGTH];
 	char *tname=NULL,*sql_q=NULL;
+	char *collist=NULL;
 	char *col_stmt=NULL;
 	char col_seperator=',';
 	char *lenbuff=NULL;
@@ -98,12 +119,10 @@ int main(int argc,char *argv[]) {
 			break;
 			case 'd':
 				dname = optarg;
-				dopt = 1;
 			break;
 
 			case 't':
 				tname = optarg;
-				topt = 1;
 			break;
 			case 'v':
 				vopt=1;
@@ -130,7 +149,7 @@ int main(int argc,char *argv[]) {
 	}
 
 	if ((!getenv("C2ODSNAME")) && (!dname)) {
-		fprintf(stderr,"missing target DS name\n");
+		fprintf(stderr,"Error Number 1 - missing target DS name\n\n");
 		Help();
 		exit(3);
 	}
@@ -138,7 +157,7 @@ int main(int argc,char *argv[]) {
 			dname = getenv("C2ODSNAME");
 
 	if ((!getenv("C2OTABLENAME")) && (!tname)) {
-		fprintf(stderr,"missing target table name\n");
+		fprintf(stderr,"Error Number 2 - missing target table name\n\n");
 		Help();
 		exit(2);
 	}
@@ -163,7 +182,7 @@ int main(int argc,char *argv[]) {
                                 NULL, 0, NULL, SQL_DRIVER_COMPLETE);
 
         if (!SQL_SUCCEEDED(ret)) {
-                fprintf(stderr,"problem connecting to DSN - \"%s\" \n",dname);
+                fprintf(stderr,"Error - problem connecting to DSN - \"%s\" \n",dname);
                 exit(2);
         }
 	else {
@@ -184,68 +203,122 @@ int main(int argc,char *argv[]) {
 	
 	if (col_stmt != NULL) {
 		colnum = firstlinetst(col_stmt,vopt,col_seperator,&quot_val);
-		sql_q = (char *)malloc(sizeof(sql_q) * ( strlen(tname) * strlen(col_stmt)));
-                strncpy(sql_q,"select ",sizeof(sql_q));
-                strcat(sql_q,col_stmt);
-                strcat(sql_q," from ");
-                strcat(sql_q,tname);
-                strcat(sql_q," limit 1");
-	
-		sql_ret = SQLExecDirect(stmt, sql_q , SQL_NTS);
-                     if (!SQL_SUCCEEDED(sql_ret)) {
-                             fprintf(stderr,"problem with the first row of the clumns names\n");
-                              exit(7);
-                     }
-                     if(vopt == 1)
-                             printf("the clumns are consistant with the table\n");
-
-                     if(vopt == 1)
-                             printf("the columns count is %d\n",colnum);
+		tablecheck(col_stmt,tname,sql_ret,stmt,vopt);
 	}
 
 	while( ((fgets(buff,MAX_LENGTH,ifile)) != NULL) ) {
 
-		if(strlen(buff)<2)
-			exit(0);
-
-		chomp(buff);
+		if (strlen(buff) < (colnum+1))
+			break;
 
 		// handling the first line to extract the columns names 
 		// from the CSV file
 		
 		if ( (linenum == 0) && (col_stmt == NULL)) {
 
+			chomp(buff);
 			colnum = firstlinetst(buff,vopt,col_seperator,&quot_val);
-			col_stmt = buff;
-			sql_q = (char *)malloc(sizeof(sql_q) * ( strlen(tname) * strlen(col_stmt)));
-	                strncpy(sql_q,"select ",sizeof(sql_q));
-        	        strcat(sql_q,col_stmt);
-                	strcat(sql_q," from ");
-                 	strcat(sql_q,tname);
-                	strcat(sql_q," limit 1");
+			col_stmt = (char *)calloc(strlen(buff),sizeof(char));
+			strcpy(col_stmt,buff);
+			//col_stmt = buff;
+			
+			tablecheck(col_stmt,tname,sql_ret,stmt,vopt);
+			continue;
+		}
 
-			sql_ret = SQLExecDirect(stmt, sql_q , SQL_NTS);
-                       	if (!SQL_SUCCEEDED(sql_ret)) {
-                               	fprintf(stderr,"problem with the first row of the clumns names\n");
-                               	exit(7);
+
+		if (collist == NULL ) {
+			collist = (char *)calloc((strlen(buff)+(colnum*2)),sizeof(char));
+			k = colnum;
+		}
+		else {
+			collist = (char *)realloc(collist,(strlen(collist)*2)+(2*strlen(buff)));
+		}
+
+		if (quot_val == 0)
+			collist[0] = '\'';
+			i=1;
+			
+
+		for (c=0;c<strlen(buff);c++) {
+
+			if (k < 0) {
+				fprintf(stderr,"the number of columns is to much at line %d \n",linenum);
+				//exit(5);
+				rcode=5;
+				break;
 			}
-			if(vopt == 1)
-                       		printf("the clumns are consistant with the table\n");
 
-			if(vopt == 1)
-				printf("the columns count is %d\n",colnum);
+			if ((buff[c] == col_seperator) && (quot_val == 0)) {
+				collist[i] = '\'';
+				i++;
+				collist[i] = ',';
+				i++;
+				collist[i] = '\'';
+				k--;
+				i++;
+			}
+			
+			else if ((buff[c] == '\"') || (buff[c] == '\'')) {
+                        	if(quot_val == 0)
+                                	quot_val=1;
+                        	else if (quot_val == 1)
+                                	quot_val=0;
+                	}
+
+			else if ( buff[c] == '\n' ) {
+				collist[i] = '\'';
+				i++;
+			}
+
+			else {
+				collist[i] = buff[c];
+				i++;
+			}
 
 		}
 
-		if(vopt == 1)
-			printf("%s\n",buff);
+
+		if (quot_val == 0) {
+	
+			if (linenum == 0)
+				fprintf(stdout,"the values are : \n");
+			
+			if (vopt == 1)
+				printf("%s\n",collist);
+
+			/* put the sql insert and query build here
+ 			 * do not forget to print is for testing and for 
+ 			 * verbose request 
+ 			 */
+
+			free(collist);
+			collist = NULL;
+		}
+		else {
+			if (exline == 0)
+				exline++;
+			else {
+				fprintf(stderr,"Invalid single quotation use in line %d\n",linenum);
+				//exit(7);
+				rcode=7;
+				break;
+			}
+			
+		}
+
 		linenum++;
+		memset(buff,'\0',0);
 	}
+
+	if (vopt == 1)
+		printf("the culomns are : %s \n",col_stmt);
+		printf("the number of lines is : %d \n",linenum);
 
 	SQLFreeHandle(SQL_HANDLE_DBC, dbc);
   	SQLFreeHandle(SQL_HANDLE_ENV, env);
         free(lenbuff);
         free(sql_q);
 
-	return 0;
+	return rcode;
 }
