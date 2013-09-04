@@ -31,8 +31,8 @@ int firstlinetst (char* firstLine,int vopt,char col_seperator,int *quot_val) {
                                 exit(4);
                         }
 
-	if(vopt == 1)
-		printf("the number of columns is : %d \n",colnum);
+	//if(vopt == 1)
+	//	printf("the number of columns is : %d \n",colnum);
 
 	return colnum;
 
@@ -68,9 +68,10 @@ char *tsql_q;
 			fprintf(stderr,"problem with the first row of the clumns names\n");
 			exit(7);
 		}
-		if(vopt == 1)
+		if(vopt == 1) {
 			printf("the clumns are consistant with the table\n");
-
+		//	printf("the culomns are : %s \n",col_stmt);
+		}
 }
 
 int main(int argc,char *argv[]) {
@@ -284,15 +285,32 @@ int main(int argc,char *argv[]) {
 			if (linenum == 0)
 				fprintf(stdout,"the values are : \n");
 			
-			if (vopt == 1)
-				printf("%s\n",collist);
-
 			/* put the sql insert and query build here
  			 * do not forget to print is for testing and for 
  			 * verbose request 
  			 */
 
+			sql_q = (char *)calloc(((strlen(collist)+strlen(col_stmt)+30)*2),sizeof(char));
+			strcpy(sql_q,"insert into ");
+			strcat(sql_q,tname);
+			strcat(sql_q," (");
+			strcat(sql_q,col_stmt);
+			strcat(sql_q,") values(");
+			strcat(sql_q,collist);
+			strcat(sql_q,");");
+
+			sql_ret = SQLExecDirect(stmt, sql_q , SQL_NTS);
+                		if (!SQL_SUCCEEDED(sql_ret)) {
+                        		fprintf(stderr,"problem inserting row number %d\n",linenum);
+                        		exit(7);
+                		}
+                		
+			if (vopt == 1)
+				printf("%s\n",sql_q);
+
+
 			free(collist);
+			free(sql_q);
 			collist = NULL;
 		}
 		else {
@@ -312,7 +330,6 @@ int main(int argc,char *argv[]) {
 	}
 
 	if (vopt == 1)
-		printf("the culomns are : %s \n",col_stmt);
 		printf("the number of lines is : %d \n",linenum);
 
 	SQLFreeHandle(SQL_HANDLE_DBC, dbc);
