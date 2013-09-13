@@ -16,7 +16,7 @@
  *
  */
 
-const void Print_csvtools()
+void Print_csvtools()
 {
 	printf("you are working with csvtools\n");
 }
@@ -66,7 +66,7 @@ void nospaces(char* csvLine) {
 	for (i=0;i<strlen(csvLine);i++)
 		if (csvLine[i] == ' ') {
 			fprintf(stderr,"Spaces found in the first Line, aborting...\n");
-			exit(5);
+			exit(4);
 		}
 }
 

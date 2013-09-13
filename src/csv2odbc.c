@@ -56,7 +56,7 @@ void tablecheck(char *col_stmt,char *tname,SQLRETURN sql_ret,SQLHSTMT stmt, int 
 	
 char *tsql_q;
 
-	tsql_q = (char *)malloc(sizeof(tsql_q) * ( strlen(tname) * strlen(col_stmt)));
+	tsql_q = (char *)malloc(sizeof(char) * ( strlen(tname) + strlen(col_stmt) + 1));
         strncpy(tsql_q,"select ",sizeof(tsql_q));
         strcat(tsql_q,col_stmt);
         strcat(tsql_q," from ");
@@ -229,11 +229,11 @@ int main(int argc,char *argv[]) {
 
 
 		if (collist == NULL ) {
-			collist = (char *)calloc((strlen(buff)+(colnum*2)),sizeof(char));
+			collist = (char *)calloc((strlen(buff)+(colnum*2)+1),sizeof(char));
 			k = colnum;
 		}
 		else {
-			collist = (char *)realloc(collist,(strlen(collist)*2)+(2*strlen(buff)));
+			collist = (char *)realloc(collist,((strlen(collist)+strlen(buff)+1)*sizeof(char)));
 		}
 
 		if (quot_val == 0)

@@ -637,6 +637,16 @@ LTLIBOBJS
 LIBOBJS
 USE_ODBC_H_FALSE
 USE_ODBC_H_TRUE
+USE_MYSQL_H_FALSE
+USE_MYSQL_H_TRUE
+USE_PGSQL_H_FALSE
+USE_PGSQL_H_TRUE
+MYSQL_LIBS
+MYSQL_INCLUDE
+have_mysql_config
+PG_LIBS
+PG_INCLUDE
+have_pg_config
 CPP
 OTOOL64
 OTOOL
@@ -761,7 +771,9 @@ enable_dependency_tracking
 with_gnu_ld
 with_sysroot
 enable_libtool_lock
-enable_odbc
+with_odbc
+with_pgsql
+with_mysql
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1401,7 +1413,6 @@ Optional Features:
   --disable-dependency-tracking
                           speeds up one-time build
   --disable-libtool-lock  avoid locking (might break parallel builds)
-  --enable-odbc           enables the csv2odbc tool [default=no]
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1411,6 +1422,9 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
+  --with-odbc             enables the csv2odbc tool [default=no]
+  --with-pgsql            enables the csv2pgsql tool [default=no]
+  --with-mysql            enables the csv2mysql tool [default=no]
 
 Some influential environment variables:
   CC          C compiler command
@@ -2205,7 +2219,6 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-#AM_INIT_AUTOMAKE(csvtools, 2.6)
 am__api_version='1.13'
 
 ac_aux_dir=
@@ -2772,8 +2785,6 @@ am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
 
 
 
-#AC_CONFIG_SRCDIR([src/csv2odbc.c])
-#AC_CONFIG_SRCDIR([lib/libcsvtools.c])
 ac_config_headers="$ac_config_headers config.h"
 
 
@@ -12135,9 +12146,11 @@ fi
 
 
 
-# Check whether --enable-odbc was given.
-if test "${enable_odbc+set}" = set; then :
-  enableval=$enable_odbc; have_odbc=yes
+
+
+# Check whether --with-odbc was given.
+if test "${with_odbc+set}" = set; then :
+  withval=$with_odbc; have_odbc=yes
 else
   have_odbc=no
 fi
@@ -12146,7 +12159,7 @@ fi
 if test "x$have_odbc" = "xyes"
 then
 	# Checks for libraries.
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing SQLDriverConnect" >&5
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing SQLDriverConnect" >&5
 $as_echo_n "checking for library containing SQLDriverConnect... " >&6; }
 if ${ac_cv_search_SQLDriverConnect+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -12204,7 +12217,7 @@ fi
 
 
 	# Checks for header files.
-	for ac_header in sql.h sqlext.h
+for ac_header in sql.h sqlext.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -12221,10 +12234,156 @@ done
 
 fi
 
+
 if test "x$have_odbc" = "xyes"; then :
 
 $as_echo "#define USE_ODBC_H 1" >>confdefs.h
 
+fi
+
+
+
+# Check whether --with-pgsql was given.
+if test "${with_pgsql+set}" = set; then :
+  withval=$with_pgsql; have_pgsql=yes
+else
+  have_pgsql=no
+fi
+
+
+if test "x$have_pgsql" = "xyes"; then :
+  # Extract the first word of "pg_config", so it can be a program name with args.
+set dummy pg_config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_have_pg_config+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$have_pg_config"; then
+  ac_cv_prog_have_pg_config="$have_pg_config" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_have_pg_config="yes"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_have_pg_config" && ac_cv_prog_have_pg_config="as_fn_error $? "\"please make sure you have pg_config in your path\"" "$LINENO" 5"
+fi
+fi
+have_pg_config=$ac_cv_prog_have_pg_config
+if test -n "$have_pg_config"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_pg_config" >&5
+$as_echo "$have_pg_config" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+
+if test "x$have_pg_config" = "xyes"; then
+
+	PG_INCLUDE=`pg_config --includedir`
+
+
+	PG_LIBS=`pg_config --libdir`
+
+
+
+$as_echo "#define USE_PGSQL_H 1" >>confdefs.h
+
+
+fi
+
+
+
+# Check whether --with-mysql was given.
+if test "${with_mysql+set}" = set; then :
+  withval=$with_mysql; have_mysql=yes
+else
+  have_mysql=no
+fi
+
+
+if test "x$have_mysql" = "xyes"; then :
+  # Extract the first word of "mysql_config", so it can be a program name with args.
+set dummy mysql_config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_have_mysql_config+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$have_mysql_config"; then
+  ac_cv_prog_have_mysql_config="$have_mysql_config" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_have_mysql_config="yes"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_have_mysql_config" && ac_cv_prog_have_mysql_config="as_fn_error $? "\"please make sure you have mysql_config in your path\"" "$LINENO" 5"
+fi
+fi
+have_mysql_config=$ac_cv_prog_have_mysql_config
+if test -n "$have_mysql_config"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_mysql_config" >&5
+$as_echo "$have_mysql_config" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+
+if test "x$have_mysql_config" = "xyes"; then
+
+	MYSQL_INCLUDE=`mysql_config --cflags`
+
+
+	MYSQL_LIBS=`mysql_config --libs`
+
+
+
+$as_echo "#define USE_MYSQL_H 1" >>confdefs.h
+
+fi
+
+ if test "x$have_pgsql" = "xyes"; then
+  USE_PGSQL_H_TRUE=
+  USE_PGSQL_H_FALSE='#'
+else
+  USE_PGSQL_H_TRUE='#'
+  USE_PGSQL_H_FALSE=
+fi
+
+ if test "x$have_mysql" = "xyes"; then
+  USE_MYSQL_H_TRUE=
+  USE_MYSQL_H_FALSE='#'
+else
+  USE_MYSQL_H_TRUE='#'
+  USE_MYSQL_H_FALSE=
 fi
 
  if test "x$have_odbc" = "xyes"; then
@@ -12235,6 +12394,8 @@ else
   USE_ODBC_H_FALSE=
 fi
 
+
+### Makefiles ###
 
 #AC_CONFIG_FILES([Makefile src/Makefile
 ac_config_files="$ac_config_files Makefile include/Makefile lib/Makefile src/Makefile"
@@ -12374,6 +12535,14 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${USE_PGSQL_H_TRUE}" && test -z "${USE_PGSQL_H_FALSE}"; then
+  as_fn_error $? "conditional \"USE_PGSQL_H\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${USE_MYSQL_H_TRUE}" && test -z "${USE_MYSQL_H_FALSE}"; then
+  as_fn_error $? "conditional \"USE_MYSQL_H\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${USE_ODBC_H_TRUE}" && test -z "${USE_ODBC_H_FALSE}"; then

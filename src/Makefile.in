@@ -78,7 +78,12 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@USE_ODBC_H_TRUE@bin_PROGRAMS = csv2odbc$(EXEEXT)
+bin_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3)
+@USE_ODBC_H_TRUE@am__append_1 = csv2odbc
+#
+@USE_MYSQL_H_TRUE@am__append_2 = csv2mysql
+#
+@USE_PGSQL_H_TRUE@am__append_3 = csv2pgsql
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
@@ -90,19 +95,38 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
+@USE_ODBC_H_TRUE@am__EXEEXT_1 = csv2odbc$(EXEEXT)
+@USE_MYSQL_H_TRUE@am__EXEEXT_2 = csv2mysql$(EXEEXT)
+@USE_PGSQL_H_TRUE@am__EXEEXT_3 = csv2pgsql$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__csv2odbc_SOURCES_DIST = csv2odbc.c
-@USE_ODBC_H_TRUE@am_csv2odbc_OBJECTS = csv2odbc-csv2odbc.$(OBJEXT)
-csv2odbc_OBJECTS = $(am_csv2odbc_OBJECTS)
-@USE_ODBC_H_TRUE@csv2odbc_DEPENDENCIES = ../lib/libcsvtools.la
+am__csv2mysql_SOURCES_DIST = csv2mysql.c
+@USE_MYSQL_H_TRUE@am_csv2mysql_OBJECTS =  \
+@USE_MYSQL_H_TRUE@	csv2mysql-csv2mysql.$(OBJEXT)
+csv2mysql_OBJECTS = $(am_csv2mysql_OBJECTS)
+@USE_MYSQL_H_TRUE@csv2mysql_DEPENDENCIES = ../lib/libcsvtools.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+csv2mysql_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2mysql_CFLAGS) \
+	$(CFLAGS) $(csv2mysql_LDFLAGS) $(LDFLAGS) -o $@
+am__csv2odbc_SOURCES_DIST = csv2odbc.c
+@USE_ODBC_H_TRUE@am_csv2odbc_OBJECTS = csv2odbc-csv2odbc.$(OBJEXT)
+csv2odbc_OBJECTS = $(am_csv2odbc_OBJECTS)
+@USE_ODBC_H_TRUE@csv2odbc_DEPENDENCIES = ../lib/libcsvtools.la
 csv2odbc_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2odbc_CFLAGS) \
 	$(CFLAGS) $(csv2odbc_LDFLAGS) $(LDFLAGS) -o $@
+am__csv2pgsql_SOURCES_DIST = csv2pgsql.c
+@USE_PGSQL_H_TRUE@am_csv2pgsql_OBJECTS =  \
+@USE_PGSQL_H_TRUE@	csv2pgsql-csv2pgsql.$(OBJEXT)
+csv2pgsql_OBJECTS = $(am_csv2pgsql_OBJECTS)
+@USE_PGSQL_H_TRUE@csv2pgsql_DEPENDENCIES = ../lib/libcsvtools.la
+csv2pgsql_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2pgsql_CFLAGS) \
+	$(CFLAGS) $(csv2pgsql_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -137,8 +161,10 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(csv2odbc_SOURCES)
-DIST_SOURCES = $(am__csv2odbc_SOURCES_DIST)
+SOURCES = $(csv2mysql_SOURCES) $(csv2odbc_SOURCES) \
+	$(csv2pgsql_SOURCES)
+DIST_SOURCES = $(am__csv2mysql_SOURCES_DIST) \
+	$(am__csv2odbc_SOURCES_DIST) $(am__csv2pgsql_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -206,6 +232,8 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+MYSQL_INCLUDE = @MYSQL_INCLUDE@
+MYSQL_LIBS = @MYSQL_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
@@ -220,6 +248,8 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PG_INCLUDE = @PG_INCLUDE@
+PG_LIBS = @PG_LIBS@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -250,6 +280,8 @@ datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+have_mysql_config = @have_mysql_config@
+have_pg_config = @have_pg_config@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -282,9 +314,16 @@ AM_CFLAGS = @CFLAGS@
 AM_LDFLAGS = 
 @USE_ODBC_H_TRUE@csv2odbc_SOURCES = csv2odbc.c 
 @USE_ODBC_H_TRUE@csv2odbc_CFLAGS = -I$(top_srcdir)/include
-# csv2odbc_LDFLAGS = -all-static -lodbc
 @USE_ODBC_H_TRUE@csv2odbc_LDFLAGS = -lodbc
 @USE_ODBC_H_TRUE@csv2odbc_LDADD = ../lib/libcsvtools.la
+@USE_MYSQL_H_TRUE@csv2mysql_SOURCES = csv2mysql.c 
+@USE_MYSQL_H_TRUE@csv2mysql_CFLAGS = -I$(top_srcdir)/include $(MYSQL_INCLUDE)
+@USE_MYSQL_H_TRUE@csv2mysql_LDFLAGS = $(MYSQL_LIBS)
+@USE_MYSQL_H_TRUE@csv2mysql_LDADD = ../lib/libcsvtools.la
+@USE_PGSQL_H_TRUE@csv2pgsql_SOURCES = csv2pgsql.c
+@USE_PGSQL_H_TRUE@csv2pgsql_CFLAGS = -I$(top_srcdir)/include -I$(PG_INCLUDE)
+@USE_PGSQL_H_TRUE@csv2pgsql_LDFLAGS = -lpq -L$(PG_LIBS)
+@USE_PGSQL_H_TRUE@csv2pgsql_LDADD = ../lib/libcsvtools.la
 all: all-am
 
 .SUFFIXES:
@@ -369,9 +408,17 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
+csv2mysql$(EXEEXT): $(csv2mysql_OBJECTS) $(csv2mysql_DEPENDENCIES) $(EXTRA_csv2mysql_DEPENDENCIES) 
+	@rm -f csv2mysql$(EXEEXT)
+	$(AM_V_CCLD)$(csv2mysql_LINK) $(csv2mysql_OBJECTS) $(csv2mysql_LDADD) $(LIBS)
+
 csv2odbc$(EXEEXT): $(csv2odbc_OBJECTS) $(csv2odbc_DEPENDENCIES) $(EXTRA_csv2odbc_DEPENDENCIES) 
 	@rm -f csv2odbc$(EXEEXT)
 	$(AM_V_CCLD)$(csv2odbc_LINK) $(csv2odbc_OBJECTS) $(csv2odbc_LDADD) $(LIBS)
+
+csv2pgsql$(EXEEXT): $(csv2pgsql_OBJECTS) $(csv2pgsql_DEPENDENCIES) $(EXTRA_csv2pgsql_DEPENDENCIES) 
+	@rm -f csv2pgsql$(EXEEXT)
+	$(AM_V_CCLD)$(csv2pgsql_LINK) $(csv2pgsql_OBJECTS) $(csv2pgsql_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -379,7 +426,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csv2mysql-csv2mysql.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csv2odbc-csv2odbc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csv2pgsql-csv2pgsql.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -402,6 +451,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
+csv2mysql-csv2mysql.o: csv2mysql.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2mysql_CFLAGS) $(CFLAGS) -MT csv2mysql-csv2mysql.o -MD -MP -MF $(DEPDIR)/csv2mysql-csv2mysql.Tpo -c -o csv2mysql-csv2mysql.o `test -f 'csv2mysql.c' || echo '$(srcdir)/'`csv2mysql.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2mysql-csv2mysql.Tpo $(DEPDIR)/csv2mysql-csv2mysql.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csv2mysql.c' object='csv2mysql-csv2mysql.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2mysql_CFLAGS) $(CFLAGS) -c -o csv2mysql-csv2mysql.o `test -f 'csv2mysql.c' || echo '$(srcdir)/'`csv2mysql.c
+
+csv2mysql-csv2mysql.obj: csv2mysql.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2mysql_CFLAGS) $(CFLAGS) -MT csv2mysql-csv2mysql.obj -MD -MP -MF $(DEPDIR)/csv2mysql-csv2mysql.Tpo -c -o csv2mysql-csv2mysql.obj `if test -f 'csv2mysql.c'; then $(CYGPATH_W) 'csv2mysql.c'; else $(CYGPATH_W) '$(srcdir)/csv2mysql.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2mysql-csv2mysql.Tpo $(DEPDIR)/csv2mysql-csv2mysql.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csv2mysql.c' object='csv2mysql-csv2mysql.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2mysql_CFLAGS) $(CFLAGS) -c -o csv2mysql-csv2mysql.obj `if test -f 'csv2mysql.c'; then $(CYGPATH_W) 'csv2mysql.c'; else $(CYGPATH_W) '$(srcdir)/csv2mysql.c'; fi`
+
 csv2odbc-csv2odbc.o: csv2odbc.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2odbc_CFLAGS) $(CFLAGS) -MT csv2odbc-csv2odbc.o -MD -MP -MF $(DEPDIR)/csv2odbc-csv2odbc.Tpo -c -o csv2odbc-csv2odbc.o `test -f 'csv2odbc.c' || echo '$(srcdir)/'`csv2odbc.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2odbc-csv2odbc.Tpo $(DEPDIR)/csv2odbc-csv2odbc.Po
@@ -415,6 +478,20 @@ csv2odbc-csv2odbc.obj: csv2odbc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csv2odbc.c' object='csv2odbc-csv2odbc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2odbc_CFLAGS) $(CFLAGS) -c -o csv2odbc-csv2odbc.obj `if test -f 'csv2odbc.c'; then $(CYGPATH_W) 'csv2odbc.c'; else $(CYGPATH_W) '$(srcdir)/csv2odbc.c'; fi`
+
+csv2pgsql-csv2pgsql.o: csv2pgsql.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2pgsql_CFLAGS) $(CFLAGS) -MT csv2pgsql-csv2pgsql.o -MD -MP -MF $(DEPDIR)/csv2pgsql-csv2pgsql.Tpo -c -o csv2pgsql-csv2pgsql.o `test -f 'csv2pgsql.c' || echo '$(srcdir)/'`csv2pgsql.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2pgsql-csv2pgsql.Tpo $(DEPDIR)/csv2pgsql-csv2pgsql.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csv2pgsql.c' object='csv2pgsql-csv2pgsql.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2pgsql_CFLAGS) $(CFLAGS) -c -o csv2pgsql-csv2pgsql.o `test -f 'csv2pgsql.c' || echo '$(srcdir)/'`csv2pgsql.c
+
+csv2pgsql-csv2pgsql.obj: csv2pgsql.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2pgsql_CFLAGS) $(CFLAGS) -MT csv2pgsql-csv2pgsql.obj -MD -MP -MF $(DEPDIR)/csv2pgsql-csv2pgsql.Tpo -c -o csv2pgsql-csv2pgsql.obj `if test -f 'csv2pgsql.c'; then $(CYGPATH_W) 'csv2pgsql.c'; else $(CYGPATH_W) '$(srcdir)/csv2pgsql.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2pgsql-csv2pgsql.Tpo $(DEPDIR)/csv2pgsql-csv2pgsql.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csv2pgsql.c' object='csv2pgsql-csv2pgsql.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2pgsql_CFLAGS) $(CFLAGS) -c -o csv2pgsql-csv2pgsql.obj `if test -f 'csv2pgsql.c'; then $(CYGPATH_W) 'csv2pgsql.c'; else $(CYGPATH_W) '$(srcdir)/csv2pgsql.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

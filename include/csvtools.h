@@ -15,7 +15,7 @@
 #ifndef LIBCSVTOOLS_H_INCLUDED
 #define LIBCSVTOOLS_H_INCLUDED
 
-const void Print_csvtools();
+void Print_csvtools();
 
 void chomp(char* s);
 

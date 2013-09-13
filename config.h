@@ -11,10 +11,10 @@
 #define HAVE_MEMORY_H 1
 
 /* Define to 1 if you have the <sqlext.h> header file. */
-#define HAVE_SQLEXT_H 1
+/* #undef HAVE_SQLEXT_H */
 
 /* Define to 1 if you have the <sql.h> header file. */
-#define HAVE_SQL_H 1
+/* #undef HAVE_SQL_H */
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
@@ -68,8 +68,14 @@
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
+/* found mysql connection to csv2mysql */
+/* #undef USE_MYSQL_H */
+
 /* found odbc connection to csv2odbc */
-#define USE_ODBC_H 1
+/* #undef USE_ODBC_H */
+
+/* found Postgresql connection for csv2pgsql */
+#define USE_PGSQL_H 1
 
 /* Version number of package */
 #define VERSION "0.0.3"
