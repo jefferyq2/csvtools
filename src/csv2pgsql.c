@@ -40,7 +40,8 @@ void exitnacely(PGconn *conn) {
 
 int main(int argc,char *argv[]) {
 
-	int c,rcode=0,vopt=0,fopt=0;
+	int c,rcode=0,vopt=0,fopt=0,quot_val=0;
+	int colnum;
 	char *col_stmt=NULL;
 	char col_seperator=',';
 	char *dbuser=NULL,*dbpass=NULL;
@@ -123,7 +124,7 @@ int main(int argc,char *argv[]) {
 	
 
 	if ( (!getenv("PGDATABASE")) && (!dbname) ) {
-		fprintf(stderr,"Error Number 1 - missing target DataBase name\n\n");
+		fprintf(stderr,"error - missing target DataBase name\n\n");
                 Help();
                 exit(3);
 
@@ -133,7 +134,7 @@ int main(int argc,char *argv[]) {
 		dbname = getenv("PGDATABASE");
 
 	if ( (!getenv("CSV2PGTABLE") ) && (!tpgname) ) {
-		fprintf(stderr,"there is no destination table specified\n\n");
+		fprintf(stderr,"error - there is no destination table specified\n\n");
 		Help();
 		exit(4);
 	}
@@ -186,7 +187,7 @@ int main(int argc,char *argv[]) {
 	/* Check to see that the backend connection was successfully made */
 	if (PQstatus(conn) != CONNECTION_OK)
 	{
-		fprintf(stderr, "Connection to database failed: %s",PQerrorMessage(conn));
+		fprintf(stderr, "error - Connection to database failed: %s",PQerrorMessage(conn));
 		exitnacely(conn);
 	}
 	else if (vopt == 1)
@@ -201,7 +202,12 @@ int main(int argc,char *argv[]) {
         // checking if the columns names are from the -c option
         //
         
-        
+        if (col_stmt != NULL) {
+                colnum = firstlinetst(col_stmt,vopt,col_seperator,&quot_val);
+ //               tablecheck(col_stmt,tname,sql_ret,stmt,vopt);
+        }
+
+	
 	free(conninfo);
 	return rcode; 
 }

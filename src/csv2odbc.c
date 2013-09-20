@@ -8,35 +8,27 @@
 #include <sqlext.h>
 #include <sqltypes.h>
 
+void tablecheck(char *col_stmt,char *tname,SQLRETURN sql_ret,SQLHSTMT stmt, int vopt) {
 
+char *tsql_q;
 
-#define MAX_LENGTH 2048
+        tsql_q = (char *)malloc(sizeof(char) * ( strlen(tname) + strlen(col_stmt) + 1));
+        strncpy(tsql_q,"select ",sizeof(tsql_q));
+        strcat(tsql_q,col_stmt);
+        strcat(tsql_q," from ");
+        strcat(tsql_q,tname);
+        strcat(tsql_q," limit 1");
 
-
-int firstlinetst (char* firstLine,int vopt,char col_seperator,int *quot_val) {
- 	int colnum=0;
-	nospaces(firstLine);
-		
-                        if (col_seperator != ',') {
-                                colnum = csvobjnum(firstLine,col_seperator,quot_val);
-                                rplccomma(firstLine,col_seperator);
-                        }
-
-                        else {
-                                colnum = csvobjnum(firstLine,',',quot_val);
-                        }
-
-                        if(*quot_val == 1) {
-                                fprintf(stderr,"error, you have oded quotation marks in the first row\n");
-                                exit(4);
-                        }
-
-	//if(vopt == 1)
-	//	printf("the number of columns is : %d \n",colnum);
-
-	return colnum;
-
+        sql_ret = SQLExecDirect(stmt, tsql_q , SQL_NTS);
+                if (!SQL_SUCCEEDED(sql_ret)) {
+                        fprintf(stderr,"problem with the first row of the clumns names\n");
+                        exit(7);
+                }
+                if(vopt == 1) {
+                        printf("the clumns are consistant with the table\n");
+                }
 }
+
 
 void Help() {
 
@@ -50,28 +42,6 @@ void Help() {
 	printf("\t\t -t - Destantion Table Name\n");
 	printf("\n");
 
-}
-
-void tablecheck(char *col_stmt,char *tname,SQLRETURN sql_ret,SQLHSTMT stmt, int vopt) {
-	
-char *tsql_q;
-
-	tsql_q = (char *)malloc(sizeof(char) * ( strlen(tname) + strlen(col_stmt) + 1));
-        strncpy(tsql_q,"select ",sizeof(tsql_q));
-        strcat(tsql_q,col_stmt);
-        strcat(tsql_q," from ");
-        strcat(tsql_q,tname);
-        strcat(tsql_q," limit 1");
-
-        sql_ret = SQLExecDirect(stmt, tsql_q , SQL_NTS);
-		if (!SQL_SUCCEEDED(sql_ret)) {
-			fprintf(stderr,"problem with the first row of the clumns names\n");
-			exit(7);
-		}
-		if(vopt == 1) {
-			printf("the clumns are consistant with the table\n");
-		//	printf("the culomns are : %s \n",col_stmt);
-		}
 }
 
 int main(int argc,char *argv[]) {
@@ -150,7 +120,7 @@ int main(int argc,char *argv[]) {
 	}
 
 	if ((!getenv("C2ODSNAME")) && (!dname)) {
-		fprintf(stderr,"Error Number 1 - missing target DS name\n\n");
+		fprintf(stderr,"error - missing target DS name\n\n");
 		Help();
 		exit(3);
 	}
@@ -158,7 +128,7 @@ int main(int argc,char *argv[]) {
 			dname = getenv("C2ODSNAME");
 
 	if ((!getenv("C2OTABLENAME")) && (!tname)) {
-		fprintf(stderr,"Error Number 2 - missing target table name\n\n");
+		fprintf(stderr,"error - missing target table name\n\n");
 		Help();
 		exit(2);
 	}
@@ -183,7 +153,7 @@ int main(int argc,char *argv[]) {
                                 NULL, 0, NULL, SQL_DRIVER_COMPLETE);
 
         if (!SQL_SUCCEEDED(ret)) {
-                fprintf(stderr,"Error - problem connecting to DSN - \"%s\" \n",dname);
+                fprintf(stderr,"error - problem connecting to DSN - \"%s\" \n",dname);
                 exit(2);
         }
 	else {
@@ -244,7 +214,7 @@ int main(int argc,char *argv[]) {
 		for (c=0;c<strlen(buff);c++) {
 
 			if (k < 0) {
-				fprintf(stderr,"the number of columns is to much at line %d \n",linenum);
+				fprintf(stderr,"error - the number of columns is to much at line %d \n",linenum);
 				//exit(5);
 				rcode=5;
 				break;
@@ -301,7 +271,7 @@ int main(int argc,char *argv[]) {
 
 			sql_ret = SQLExecDirect(stmt, sql_q , SQL_NTS);
                 		if (!SQL_SUCCEEDED(sql_ret)) {
-                        		fprintf(stderr,"problem inserting row number %d\n",linenum);
+                        		fprintf(stderr,"error - problem inserting row number %d\n",linenum);
                         		exit(7);
                 		}
                 		
@@ -317,7 +287,7 @@ int main(int argc,char *argv[]) {
 			if (exline == 0)
 				exline++;
 			else {
-				fprintf(stderr,"Invalid single quotation use in line %d\n",linenum);
+				fprintf(stderr,"error - Invalid single quotation use in line %d\n",linenum);
 				//exit(7);
 				rcode=7;
 				break;

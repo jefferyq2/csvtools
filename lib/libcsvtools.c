@@ -1,6 +1,7 @@
 #include "csvtools.h"
 #include <stdio.h>
 #include <string.h>
+
 /* 
  * int csvquotation(char* csvLine)
  * check for number of quotation marks in the given line and returns zero if it's even
@@ -26,22 +27,6 @@ void chomp(char *s)
 	s[strcspn ( s, "\n" )] = '\0';
 	setbuf(stdin,NULL);
 }
-
-/* const int csvquotation(char* csvLine) {
-
-	int quotation_val=0;
-	int i=0;
-	for ( i=0;i<strlen(csvLine);i++ ) {
-		if((csvLine[i] == '\"') || (csvLine[i] == '\'')) {
-			if(quotation_val == 0)
-				quotation_val=1;
-			else if (quotation_val == 1)
-				quotation_val=0;
-		}
-	}
-
-	return quotation_val;
-} */
 
 const int csvobjnum(char *csvLine,char delimiter,int *quotation_val) {
 	int i=0,objnum=0;
@@ -76,3 +61,27 @@ void rplccomma(char* csvLine,char delimiter) {
 		if (csvLine[i] == delimiter)
 			csvLine[i] = ',';
 }
+
+
+int firstlinetst (char* firstLine,int vopt,char col_seperator,int *quot_val) {
+        int colnum=0;
+        nospaces(firstLine);
+
+                        if (col_seperator != ',') {
+                                colnum = csvobjnum(firstLine,col_seperator,quot_val);
+                                rplccomma(firstLine,col_seperator);
+                        }
+
+                        else {
+                                colnum = csvobjnum(firstLine,',',quot_val);
+                        }
+
+                        if(*quot_val == 1) {
+                                fprintf(stderr,"error, you have oded quotation marks in the first row\n");
+                                exit(4);
+                        }
+
+        return colnum;
+
+}
+

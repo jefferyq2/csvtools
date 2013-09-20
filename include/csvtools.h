@@ -15,15 +15,18 @@
 #ifndef LIBCSVTOOLS_H_INCLUDED
 #define LIBCSVTOOLS_H_INCLUDED
 
+#define MAX_LENGTH 4096
+
 void Print_csvtools();
 
 void chomp(char* s);
-
-//const int csvquotation(char* csvLine);
 
 const int csvobjnum(char *csvLine,char delimiter,int* quotation_val);
 
 void nospaces(char* csvLine);
 
 void rplccomma(char* csvLine,char delimiter);
+
+int firstlinetst (char* firstLine,int vopt,char col_seperator,int *quot_val);
+
 #endif

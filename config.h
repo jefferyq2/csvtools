@@ -11,10 +11,10 @@
 #define HAVE_MEMORY_H 1
 
 /* Define to 1 if you have the <sqlext.h> header file. */
-/* #undef HAVE_SQLEXT_H */
+#define HAVE_SQLEXT_H 1
 
 /* Define to 1 if you have the <sql.h> header file. */
-/* #undef HAVE_SQL_H */
+#define HAVE_SQL_H 1
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
@@ -72,7 +72,7 @@
 /* #undef USE_MYSQL_H */
 
 /* found odbc connection to csv2odbc */
-/* #undef USE_ODBC_H */
+#define USE_ODBC_H 1
 
 /* found Postgresql connection for csv2pgsql */
 #define USE_PGSQL_H 1

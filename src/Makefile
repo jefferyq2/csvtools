@@ -79,7 +79,7 @@ POST_UNINSTALL = :
 build_triplet = x86_64-unknown-linux-gnu
 host_triplet = x86_64-unknown-linux-gnu
 bin_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3)
-#am__append_1 = csv2odbc
+am__append_1 = csv2odbc
 #
 #am__append_2 = csv2mysql
 #
@@ -95,7 +95,7 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-#am__EXEEXT_1 = csv2odbc$(EXEEXT)
+am__EXEEXT_1 = csv2odbc$(EXEEXT)
 #am__EXEEXT_2 = csv2mysql$(EXEEXT)
 am__EXEEXT_3 = csv2pgsql$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -113,9 +113,9 @@ csv2mysql_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2mysql_CFLAGS) \
 	$(CFLAGS) $(csv2mysql_LDFLAGS) $(LDFLAGS) -o $@
 am__csv2odbc_SOURCES_DIST = csv2odbc.c
-#am_csv2odbc_OBJECTS = csv2odbc-csv2odbc.$(OBJEXT)
+am_csv2odbc_OBJECTS = csv2odbc-csv2odbc.$(OBJEXT)
 csv2odbc_OBJECTS = $(am_csv2odbc_OBJECTS)
-#csv2odbc_DEPENDENCIES = ../lib/libcsvtools.la
+csv2odbc_DEPENDENCIES = ../lib/libcsvtools.la
 csv2odbc_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2odbc_CFLAGS) \
 	$(CFLAGS) $(csv2odbc_LDFLAGS) $(LDFLAGS) -o $@
@@ -224,7 +224,7 @@ INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LD = /usr/bin/ld -m elf_x86_64
 LDFLAGS = 
 LIBOBJS = 
-LIBS = 
+LIBS = -lodbc 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = 
 LN_S = ln -s
@@ -312,10 +312,10 @@ top_builddir = ..
 top_srcdir = ..
 AM_CFLAGS = -g -O2
 AM_LDFLAGS = 
-#csv2odbc_SOURCES = csv2odbc.c 
-#csv2odbc_CFLAGS = -I$(top_srcdir)/include
-#csv2odbc_LDFLAGS = -lodbc
-#csv2odbc_LDADD = ../lib/libcsvtools.la
+csv2odbc_SOURCES = csv2odbc.c 
+csv2odbc_CFLAGS = -I$(top_srcdir)/include
+csv2odbc_LDFLAGS = -lodbc
+csv2odbc_LDADD = ../lib/libcsvtools.la
 #csv2mysql_SOURCES = csv2mysql.c 
 #csv2mysql_CFLAGS = -I$(top_srcdir)/include $(MYSQL_INCLUDE)
 #csv2mysql_LDFLAGS = $(MYSQL_LIBS)
