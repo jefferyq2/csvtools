@@ -27,6 +27,8 @@ char *tsql_q;
                 if(vopt == 1) {
                         printf("the clumns are consistant with the table\n");
                 }
+
+	free(tsql_q);
 }
 
 
@@ -191,7 +193,6 @@ int main(int argc,char *argv[]) {
 			colnum = firstlinetst(buff,vopt,col_seperator,&quot_val);
 			col_stmt = (char *)calloc(strlen(buff),sizeof(char));
 			strcpy(col_stmt,buff);
-			//col_stmt = buff;
 			
 			tablecheck(col_stmt,tname,sql_ret,stmt,vopt);
 			continue;
@@ -252,9 +253,6 @@ int main(int argc,char *argv[]) {
 
 		if (quot_val == 0) {
 	
-			if (linenum == 0)
-				fprintf(stdout,"the values are : \n");
-			
 			/* put the sql insert and query build here
  			 * do not forget to print is for testing and for 
  			 * verbose request 
