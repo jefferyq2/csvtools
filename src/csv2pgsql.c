@@ -277,9 +277,10 @@ int main(int argc,char *argv[]) {
                         collist = (char *)realloc(collist,((strlen(collist)+strlen(buff)+1)*sizeof(char)));
                 }
 
-                if (quot_val == 0)
+                if (quot_val == 0) {
                         collist[0] = '\'';
                         i=1;
+		}
 
 		for (c=0;c<strlen(buff);c++) {
 
@@ -338,6 +339,9 @@ int main(int argc,char *argv[]) {
 				PQclear(res);
 				exitnacely(conn);
 			}
+			else {
+				PQclear(res);
+			}
 
 			if (vopt == 1)
 				printf("the sql : %s\n",sql_q);
@@ -365,7 +369,7 @@ int main(int argc,char *argv[]) {
 
 	}
 
-	
+	fclose(ifile);
 	/* end the transaction */
 	res = PQexec(conn, "END");
 	PQclear(res);

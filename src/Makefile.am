@@ -27,3 +27,12 @@ csv2pgsql_CFLAGS = -I$(top_srcdir)/include -I$(PG_INCLUDE)
 csv2pgsql_LDFLAGS = -lpq -L$(PG_LIBS)
 csv2pgsql_LDADD = ../lib/libcsvtools.la
 endif
+#
+if USE_SQLITE_H
+bin_PROGRAMS += csv2sqlite
+csv2sqlite_SOURCES = csv2sqlite.c
+csv2sqlite_CFLAGS = -I$(top_srcdir)/include
+csv2sqlite_LDFLAGS = -lsqlite3
+csv2sqlite_LDADD = ../lib/libcsvtools.la
+endif
+#

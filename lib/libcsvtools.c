@@ -1,5 +1,6 @@
 #include "csvtools.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /* 
@@ -51,7 +52,7 @@ void nospaces(char* csvLine) {
 	for (i=0;i<strlen(csvLine);i++)
 		if (csvLine[i] == ' ') {
 			fprintf(stderr,"Spaces found in the first Line, aborting...\n");
-			exit(4);
+			exit(5);
 		}
 }
 

@@ -78,12 +78,17 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = x86_64-unknown-linux-gnu
 host_triplet = x86_64-unknown-linux-gnu
-bin_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3)
-am__append_1 = csv2odbc
+bin_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3) \
+	$(am__EXEEXT_4) $(am__EXEEXT_5)
+#am__append_1 = csv2odbc
 #
 #am__append_2 = csv2mysql
 #
-am__append_3 = csv2pgsql
+#am__append_3 = csv2pgsql
+#
+am__append_4 = csv2sqlite
+#
+am__append_5 = csv2json
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
@@ -95,38 +100,55 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__EXEEXT_1 = csv2odbc$(EXEEXT)
+#am__EXEEXT_1 = csv2odbc$(EXEEXT)
 #am__EXEEXT_2 = csv2mysql$(EXEEXT)
-am__EXEEXT_3 = csv2pgsql$(EXEEXT)
+#am__EXEEXT_3 = csv2pgsql$(EXEEXT)
+am__EXEEXT_4 = csv2sqlite$(EXEEXT)
+am__EXEEXT_5 = csv2json$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
+am__csv2json_SOURCES_DIST = csv2json.c
+am_csv2json_OBJECTS = csv2json-csv2json.$(OBJEXT)
+csv2json_OBJECTS = $(am_csv2json_OBJECTS)
+csv2json_DEPENDENCIES = ../lib/libcsvtools.la
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+am__v_lt_1 = 
+csv2json_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2json_CFLAGS) \
+	$(CFLAGS) $(csv2json_LDFLAGS) $(LDFLAGS) -o $@
 am__csv2mysql_SOURCES_DIST = csv2mysql.c
 #am_csv2mysql_OBJECTS =  \
 #	csv2mysql-csv2mysql.$(OBJEXT)
 csv2mysql_OBJECTS = $(am_csv2mysql_OBJECTS)
 #csv2mysql_DEPENDENCIES = ../lib/libcsvtools.la
-AM_V_lt = $(am__v_lt_$(V))
-am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
-am__v_lt_0 = --silent
-am__v_lt_1 = 
 csv2mysql_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2mysql_CFLAGS) \
 	$(CFLAGS) $(csv2mysql_LDFLAGS) $(LDFLAGS) -o $@
 am__csv2odbc_SOURCES_DIST = csv2odbc.c
-am_csv2odbc_OBJECTS = csv2odbc-csv2odbc.$(OBJEXT)
+#am_csv2odbc_OBJECTS = csv2odbc-csv2odbc.$(OBJEXT)
 csv2odbc_OBJECTS = $(am_csv2odbc_OBJECTS)
-csv2odbc_DEPENDENCIES = ../lib/libcsvtools.la
+#csv2odbc_DEPENDENCIES = ../lib/libcsvtools.la
 csv2odbc_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2odbc_CFLAGS) \
 	$(CFLAGS) $(csv2odbc_LDFLAGS) $(LDFLAGS) -o $@
 am__csv2pgsql_SOURCES_DIST = csv2pgsql.c
-am_csv2pgsql_OBJECTS =  \
-	csv2pgsql-csv2pgsql.$(OBJEXT)
+#am_csv2pgsql_OBJECTS =  \
+#	csv2pgsql-csv2pgsql.$(OBJEXT)
 csv2pgsql_OBJECTS = $(am_csv2pgsql_OBJECTS)
-csv2pgsql_DEPENDENCIES = ../lib/libcsvtools.la
+#csv2pgsql_DEPENDENCIES = ../lib/libcsvtools.la
 csv2pgsql_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2pgsql_CFLAGS) \
 	$(CFLAGS) $(csv2pgsql_LDFLAGS) $(LDFLAGS) -o $@
+am__csv2sqlite_SOURCES_DIST = csv2sqlite.c
+am_csv2sqlite_OBJECTS =  \
+	csv2sqlite-csv2sqlite.$(OBJEXT)
+csv2sqlite_OBJECTS = $(am_csv2sqlite_OBJECTS)
+csv2sqlite_DEPENDENCIES = ../lib/libcsvtools.la
+csv2sqlite_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2sqlite_CFLAGS) \
+	$(CFLAGS) $(csv2sqlite_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -161,10 +183,11 @@ AM_V_CCLD = $(am__v_CCLD_$(V))
 am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(csv2mysql_SOURCES) $(csv2odbc_SOURCES) \
-	$(csv2pgsql_SOURCES)
-DIST_SOURCES = $(am__csv2mysql_SOURCES_DIST) \
-	$(am__csv2odbc_SOURCES_DIST) $(am__csv2pgsql_SOURCES_DIST)
+SOURCES = $(csv2json_SOURCES) $(csv2mysql_SOURCES) $(csv2odbc_SOURCES) \
+	$(csv2pgsql_SOURCES) $(csv2sqlite_SOURCES)
+DIST_SOURCES = $(am__csv2json_SOURCES_DIST) \
+	$(am__csv2mysql_SOURCES_DIST) $(am__csv2odbc_SOURCES_DIST) \
+	$(am__csv2pgsql_SOURCES_DIST) $(am__csv2sqlite_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -221,10 +244,11 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
+JSON_INCLUDE = /usr/include/json
 LD = /usr/bin/ld -m elf_x86_64
 LDFLAGS = 
 LIBOBJS = 
-LIBS = -lodbc 
+LIBS = -ljson-c -lsqlite3 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = 
 LN_S = ln -s
@@ -248,8 +272,8 @@ PACKAGE_TARNAME = csvtools
 PACKAGE_URL = 
 PACKAGE_VERSION = 0.0.3
 PATH_SEPARATOR = :
-PG_INCLUDE = /usr/include
-PG_LIBS = /usr/lib64
+PG_INCLUDE = 
+PG_LIBS = 
 RANLIB = ranlib
 SED = /usr/bin/sed
 SET_MAKE = 
@@ -281,7 +305,7 @@ docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
 have_mysql_config = 
-have_pg_config = yes
+have_pg_config = 
 host = x86_64-unknown-linux-gnu
 host_alias = 
 host_cpu = x86_64
@@ -312,18 +336,26 @@ top_builddir = ..
 top_srcdir = ..
 AM_CFLAGS = -g -O2
 AM_LDFLAGS = 
-csv2odbc_SOURCES = csv2odbc.c 
-csv2odbc_CFLAGS = -I$(top_srcdir)/include
-csv2odbc_LDFLAGS = -lodbc
-csv2odbc_LDADD = ../lib/libcsvtools.la
+#csv2odbc_SOURCES = csv2odbc.c 
+#csv2odbc_CFLAGS = -I$(top_srcdir)/include
+#csv2odbc_LDFLAGS = -lodbc
+#csv2odbc_LDADD = ../lib/libcsvtools.la
 #csv2mysql_SOURCES = csv2mysql.c 
 #csv2mysql_CFLAGS = -I$(top_srcdir)/include $(MYSQL_INCLUDE)
 #csv2mysql_LDFLAGS = $(MYSQL_LIBS)
 #csv2mysql_LDADD = ../lib/libcsvtools.la
-csv2pgsql_SOURCES = csv2pgsql.c
-csv2pgsql_CFLAGS = -I$(top_srcdir)/include -I$(PG_INCLUDE)
-csv2pgsql_LDFLAGS = -lpq -L$(PG_LIBS)
-csv2pgsql_LDADD = ../lib/libcsvtools.la
+#csv2pgsql_SOURCES = csv2pgsql.c
+#csv2pgsql_CFLAGS = -I$(top_srcdir)/include -I$(PG_INCLUDE)
+#csv2pgsql_LDFLAGS = -lpq -L$(PG_LIBS)
+#csv2pgsql_LDADD = ../lib/libcsvtools.la
+csv2sqlite_SOURCES = csv2sqlite.c
+csv2sqlite_CFLAGS = -I$(top_srcdir)/include
+csv2sqlite_LDFLAGS = -lsqlite3
+csv2sqlite_LDADD = ../lib/libcsvtools.la
+csv2json_SOURCES = csv2json.c
+csv2json_CFLAGS = -I$(top_srcdir)/include -I$(JSON_INCLUDE)
+csv2json_LDFLAGS = -ljson-c
+csv2json_LDADD = ../lib/libcsvtools.la
 all: all-am
 
 .SUFFIXES:
@@ -408,6 +440,10 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
+csv2json$(EXEEXT): $(csv2json_OBJECTS) $(csv2json_DEPENDENCIES) $(EXTRA_csv2json_DEPENDENCIES) 
+	@rm -f csv2json$(EXEEXT)
+	$(AM_V_CCLD)$(csv2json_LINK) $(csv2json_OBJECTS) $(csv2json_LDADD) $(LIBS)
+
 csv2mysql$(EXEEXT): $(csv2mysql_OBJECTS) $(csv2mysql_DEPENDENCIES) $(EXTRA_csv2mysql_DEPENDENCIES) 
 	@rm -f csv2mysql$(EXEEXT)
 	$(AM_V_CCLD)$(csv2mysql_LINK) $(csv2mysql_OBJECTS) $(csv2mysql_LDADD) $(LIBS)
@@ -420,15 +456,21 @@ csv2pgsql$(EXEEXT): $(csv2pgsql_OBJECTS) $(csv2pgsql_DEPENDENCIES) $(EXTRA_csv2p
 	@rm -f csv2pgsql$(EXEEXT)
 	$(AM_V_CCLD)$(csv2pgsql_LINK) $(csv2pgsql_OBJECTS) $(csv2pgsql_LDADD) $(LIBS)
 
+csv2sqlite$(EXEEXT): $(csv2sqlite_OBJECTS) $(csv2sqlite_DEPENDENCIES) $(EXTRA_csv2sqlite_DEPENDENCIES) 
+	@rm -f csv2sqlite$(EXEEXT)
+	$(AM_V_CCLD)$(csv2sqlite_LINK) $(csv2sqlite_OBJECTS) $(csv2sqlite_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/csv2json-csv2json.Po
 include ./$(DEPDIR)/csv2mysql-csv2mysql.Po
 include ./$(DEPDIR)/csv2odbc-csv2odbc.Po
 include ./$(DEPDIR)/csv2pgsql-csv2pgsql.Po
+include ./$(DEPDIR)/csv2sqlite-csv2sqlite.Po
 
 .c.o:
 	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -450,6 +492,20 @@ include ./$(DEPDIR)/csv2pgsql-csv2pgsql.Po
 #	$(AM_V_CC)source='$<' object='$@' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(AM_V_CC_no)$(LTCOMPILE) -c -o $@ $<
+
+csv2json-csv2json.o: csv2json.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2json_CFLAGS) $(CFLAGS) -MT csv2json-csv2json.o -MD -MP -MF $(DEPDIR)/csv2json-csv2json.Tpo -c -o csv2json-csv2json.o `test -f 'csv2json.c' || echo '$(srcdir)/'`csv2json.c
+	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2json-csv2json.Tpo $(DEPDIR)/csv2json-csv2json.Po
+#	$(AM_V_CC)source='csv2json.c' object='csv2json-csv2json.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2json_CFLAGS) $(CFLAGS) -c -o csv2json-csv2json.o `test -f 'csv2json.c' || echo '$(srcdir)/'`csv2json.c
+
+csv2json-csv2json.obj: csv2json.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2json_CFLAGS) $(CFLAGS) -MT csv2json-csv2json.obj -MD -MP -MF $(DEPDIR)/csv2json-csv2json.Tpo -c -o csv2json-csv2json.obj `if test -f 'csv2json.c'; then $(CYGPATH_W) 'csv2json.c'; else $(CYGPATH_W) '$(srcdir)/csv2json.c'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2json-csv2json.Tpo $(DEPDIR)/csv2json-csv2json.Po
+#	$(AM_V_CC)source='csv2json.c' object='csv2json-csv2json.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2json_CFLAGS) $(CFLAGS) -c -o csv2json-csv2json.obj `if test -f 'csv2json.c'; then $(CYGPATH_W) 'csv2json.c'; else $(CYGPATH_W) '$(srcdir)/csv2json.c'; fi`
 
 csv2mysql-csv2mysql.o: csv2mysql.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2mysql_CFLAGS) $(CFLAGS) -MT csv2mysql-csv2mysql.o -MD -MP -MF $(DEPDIR)/csv2mysql-csv2mysql.Tpo -c -o csv2mysql-csv2mysql.o `test -f 'csv2mysql.c' || echo '$(srcdir)/'`csv2mysql.c
@@ -492,6 +548,20 @@ csv2pgsql-csv2pgsql.obj: csv2pgsql.c
 #	$(AM_V_CC)source='csv2pgsql.c' object='csv2pgsql-csv2pgsql.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2pgsql_CFLAGS) $(CFLAGS) -c -o csv2pgsql-csv2pgsql.obj `if test -f 'csv2pgsql.c'; then $(CYGPATH_W) 'csv2pgsql.c'; else $(CYGPATH_W) '$(srcdir)/csv2pgsql.c'; fi`
+
+csv2sqlite-csv2sqlite.o: csv2sqlite.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2sqlite_CFLAGS) $(CFLAGS) -MT csv2sqlite-csv2sqlite.o -MD -MP -MF $(DEPDIR)/csv2sqlite-csv2sqlite.Tpo -c -o csv2sqlite-csv2sqlite.o `test -f 'csv2sqlite.c' || echo '$(srcdir)/'`csv2sqlite.c
+	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2sqlite-csv2sqlite.Tpo $(DEPDIR)/csv2sqlite-csv2sqlite.Po
+#	$(AM_V_CC)source='csv2sqlite.c' object='csv2sqlite-csv2sqlite.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2sqlite_CFLAGS) $(CFLAGS) -c -o csv2sqlite-csv2sqlite.o `test -f 'csv2sqlite.c' || echo '$(srcdir)/'`csv2sqlite.c
+
+csv2sqlite-csv2sqlite.obj: csv2sqlite.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2sqlite_CFLAGS) $(CFLAGS) -MT csv2sqlite-csv2sqlite.obj -MD -MP -MF $(DEPDIR)/csv2sqlite-csv2sqlite.Tpo -c -o csv2sqlite-csv2sqlite.obj `if test -f 'csv2sqlite.c'; then $(CYGPATH_W) 'csv2sqlite.c'; else $(CYGPATH_W) '$(srcdir)/csv2sqlite.c'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2sqlite-csv2sqlite.Tpo $(DEPDIR)/csv2sqlite-csv2sqlite.Po
+#	$(AM_V_CC)source='csv2sqlite.c' object='csv2sqlite-csv2sqlite.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2sqlite_CFLAGS) $(CFLAGS) -c -o csv2sqlite-csv2sqlite.obj `if test -f 'csv2sqlite.c'; then $(CYGPATH_W) 'csv2sqlite.c'; else $(CYGPATH_W) '$(srcdir)/csv2sqlite.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

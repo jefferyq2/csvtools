@@ -1,7 +1,7 @@
-libcsvtools_la-libcsvtools.lo: libcsvtools.c /usr/include/stdc-predef.h \
- ../include/csvtools.h /usr/include/stdio.h /usr/include/features.h \
- /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
- /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h \
+csv2pgsql-csv2pgsql.o: csv2pgsql.c /usr/include/stdc-predef.h \
+ /usr/include/stdio.h /usr/include/features.h /usr/include/sys/cdefs.h \
+ /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+ /usr/include/gnu/stubs-64.h \
  /usr/lib/gcc/x86_64-redhat-linux/4.8.1/include/stddef.h \
  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
@@ -17,11 +17,13 @@ libcsvtools_la-libcsvtools.lo: libcsvtools.c /usr/include/stdc-predef.h \
  /usr/include/bits/pthreadtypes.h /usr/include/alloca.h \
  /usr/include/bits/stdlib-float.h /usr/include/string.h \
  /usr/include/xlocale.h /usr/include/bits/string.h \
- /usr/include/bits/string2.h
+ /usr/include/bits/string2.h /usr/include/strings.h \
+ /usr/include/libpq-fe.h /usr/include/postgres_ext.h \
+ /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+ /usr/include/bits/environments.h /usr/include/bits/confname.h \
+ /usr/include/getopt.h ../include/csvtools.h
 
 /usr/include/stdc-predef.h:
-
-../include/csvtools.h:
 
 /usr/include/stdio.h:
 
@@ -96,3 +98,21 @@ libcsvtools_la-libcsvtools.lo: libcsvtools.c /usr/include/stdc-predef.h \
 /usr/include/bits/string.h:
 
 /usr/include/bits/string2.h:
+
+/usr/include/strings.h:
+
+/usr/include/libpq-fe.h:
+
+/usr/include/postgres_ext.h:
+
+/usr/include/unistd.h:
+
+/usr/include/bits/posix_opt.h:
+
+/usr/include/bits/environments.h:
+
+/usr/include/bits/confname.h:
+
+/usr/include/getopt.h:
+
+../include/csvtools.h:

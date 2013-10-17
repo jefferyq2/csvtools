@@ -12,7 +12,7 @@ void tablecheck(char *col_stmt,char *tname,SQLRETURN sql_ret,SQLHSTMT stmt, int 
 
 char *tsql_q;
 
-        tsql_q = (char *)malloc(sizeof(char) * ( strlen(tname) + strlen(col_stmt) + 1));
+        tsql_q = (char *)malloc(sizeof(char) * ( strlen(tname) + strlen(col_stmt) + 30));
         strncpy(tsql_q,"select ",sizeof(tsql_q));
         strcat(tsql_q,col_stmt);
         strcat(tsql_q," from ");
@@ -207,16 +207,15 @@ int main(int argc,char *argv[]) {
 			collist = (char *)realloc(collist,((strlen(collist)+strlen(buff)+1)*sizeof(char)));
 		}
 
-		if (quot_val == 0)
+		if (quot_val == 0) {
 			collist[0] = '\'';
 			i=1;
-			
+		}
 
 		for (c=0;c<strlen(buff);c++) {
 
 			if (k < 0) {
 				fprintf(stderr,"error - the number of columns is to much at line %d \n",linenum);
-				//exit(5);
 				rcode=5;
 				break;
 			}
@@ -286,7 +285,6 @@ int main(int argc,char *argv[]) {
 				exline++;
 			else {
 				fprintf(stderr,"error - Invalid single quotation use in line %d\n",linenum);
-				//exit(7);
 				rcode=7;
 				break;
 			}

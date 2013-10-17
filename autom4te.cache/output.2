@@ -635,6 +635,8 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIB@&t@OBJS
+USE_SQLITE_H_FALSE
+USE_SQLITE_H_TRUE
 USE_ODBC_H_FALSE
 USE_ODBC_H_TRUE
 USE_MYSQL_H_FALSE
@@ -773,7 +775,10 @@ with_sysroot
 enable_libtool_lock
 with_odbc
 with_pgsql
+with_pgsql_include_path
 with_mysql
+with_mysql_include_path
+with_sqlite
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1422,9 +1427,17 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld @<:@default=no@:>@
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
-  --with-odbc             enables the csv2odbc tool @<:@default=no@:>@ 
+  --with-odbc             enables the csv2odbc tool @<:@default=no@:>@
   --with-pgsql            enables the csv2pgsql tool @<:@default=no@:>@
+  --with-pgsql-include-path 
+                          location of the Postgresql headers, defaults to
+                          /usr/include/
   --with-mysql            enables the csv2mysql tool @<:@default=no@:>@
+  --with-mysql-include-path 
+                          location of the MySQL headers, defaults to
+                          /usr/include/mysql
+  --without-sqlite        disables insertion to sqlite with csv2sqlite tool
+                          @<:@default=yes@:>@
 
 Some influential environment variables:
   CC          C compiler command
@@ -12156,8 +12169,8 @@ else
 fi
 
 
-if test "x$have_odbc" = "xyes"
-then
+if test "x$have_odbc" = "xyes"; then
+
 	# Checks for libraries.
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing SQLDriverConnect" >&5
 $as_echo_n "checking for library containing SQLDriverConnect... " >&6; }
@@ -12213,6 +12226,8 @@ ac_res=$ac_cv_search_SQLDriverConnect
 if test "$ac_res" != no; then :
   test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   have_odbc=yes
+else
+  as_fn_error $? "\"unable to locate sqlite3 libraries\"" "$LINENO" 5
 fi
 
 
@@ -12225,21 +12240,20 @@ if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
   cat >>confdefs.h <<_ACEOF
 @%:@define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
 _ACEOF
- 
+ have_odbc=yes
 else
-  have_odbc=no
+  as_fn_error $? "\"unable to locate sqlite3 libraries\"" "$LINENO" 5
 fi
 
 done
 
-fi
+      	
 
-
-if test "x$have_odbc" = "xyes"; then :
-  
 $as_echo "@%:@define USE_ODBC_H 1" >>confdefs.h
 
 fi
+
+
 
 
 
@@ -12294,11 +12308,36 @@ fi
 
 if test "x$have_pg_config" = "xyes"; then
 
-	PG_INCLUDE=`pg_config --includedir`
+
+@%:@ Check whether --with-pgsql-include-path was given.
+if test "${with_pgsql_include_path+set}" = set; then :
+  withval=$with_pgsql_include_path; pgsql_include="$withval"
+else
+  pgsql_include="/usr/include"
+fi
+
+
+for ac_header in "$pgsql_include"/libpq-fe.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+@%:@define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+ 
+else
+  as_fn_error $? "\"please make sure you have postgresql development kit\"" "$LINENO" 5
+fi
+
+done
+
 	
+PG_INCLUDE=`pg_config --includedir`
+
 	
-	PG_LIBS=`pg_config --libdir`
-	
+PG_LIBS=`pg_config --libdir`
+
      
 
 $as_echo "@%:@define USE_PGSQL_H 1" >>confdefs.h
@@ -12357,18 +12396,139 @@ fi
 
 fi
 
+
 if test "x$have_mysql_config" = "xyes"; then
 
-	MYSQL_INCLUDE=`mysql_config --cflags`
-	
 
-	MYSQL_LIBS=`mysql_config --libs`
-	
+@%:@ Check whether --with-mysql-include-path was given.
+if test "${with_mysql_include_path+set}" = set; then :
+  withval=$with_mysql_include_path; mysql_include="$withval"
+else
+  mysql_include="/usr/include/mysql"
+fi
 
-	
+
+for ac_header in "$mysql_include"/mysql.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+@%:@define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+ 
+else
+  as_fn_error $? "\"please make sure you have Mysql/MariaDB development kit\"" "$LINENO" 5
+fi
+
+done
+
+
+MYSQL_INCLUDE=`mysql_config --cflags`
+
+
+MYSQL_LIBS=`mysql_config --libs`
+
+
+
 $as_echo "@%:@define USE_MYSQL_H 1" >>confdefs.h
 
+
 fi
+
+
+@%:@ Check whether --with-sqlite was given.
+if test "${with_sqlite+set}" = set; then :
+  withval=$with_sqlite; have_sqlite=no
+else
+  have_sqlite=yes
+fi
+
+
+if test "x$have_sqlite" = "xyes"; then
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing sqlite3_open" >&5
+$as_echo_n "checking for library containing sqlite3_open... " >&6; }
+if ${ac_cv_search_sqlite3_open+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char sqlite3_open ();
+int
+main ()
+{
+return sqlite3_open ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' sqlite3; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_sqlite3_open=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search_sqlite3_open+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search_sqlite3_open+:} false; then :
+  
+else
+  ac_cv_search_sqlite3_open=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_sqlite3_open" >&5
+$as_echo "$ac_cv_search_sqlite3_open" >&6; }
+ac_res=$ac_cv_search_sqlite3_open
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+  have_sqlite=yes
+else
+  as_fn_error $? "\"unable to locate sqlite3 libraries\"" "$LINENO" 5
+fi
+
+
+for ac_header in sqlite3.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "sqlite3.h" "ac_cv_header_sqlite3_h" "$ac_includes_default"
+if test "x$ac_cv_header_sqlite3_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+@%:@define HAVE_SQLITE3_H 1
+_ACEOF
+ have_sqlite=yes
+else
+  as_fn_error $? "\"unable to locate the sqlite3.h header file\"" "$LINENO" 5
+fi
+
+done
+
+fi
+
+if test "x$have_sqlite" = "xyes"; then :
+  
+$as_echo "@%:@define USE_SQLITE_H 1" >>confdefs.h
+
+fi
+
+
 
  if test "x$have_pgsql" = "xyes"; then
   USE_PGSQL_H_TRUE=
@@ -12392,6 +12552,14 @@ fi
 else
   USE_ODBC_H_TRUE='#'
   USE_ODBC_H_FALSE=
+fi
+
+ if test "x$have_sqlite" = "xyes"; then
+  USE_SQLITE_H_TRUE=
+  USE_SQLITE_H_FALSE='#'
+else
+  USE_SQLITE_H_TRUE='#'
+  USE_SQLITE_H_FALSE=
 fi
 
 
@@ -12547,6 +12715,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${USE_ODBC_H_TRUE}" && test -z "${USE_ODBC_H_FALSE}"; then
   as_fn_error $? "conditional \"USE_ODBC_H\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${USE_SQLITE_H_TRUE}" && test -z "${USE_SQLITE_H_FALSE}"; then
+  as_fn_error $? "conditional \"USE_SQLITE_H\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
