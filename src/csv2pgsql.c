@@ -54,7 +54,7 @@ char *tsql_q;
     	{
 		printf("problem with the columns names\n");
 		if (vopt == 1)
-        		fprintf(stderr, "select table test failed: %s\n", PQerrorMessage(conn));
+        		fprintf(stderr, "the table %s did not pass the columns check: %s\n", tpgname, PQerrorMessage(conn));
         	PQclear(res);
         	exitnacely(conn);
 	}
@@ -181,10 +181,15 @@ int main(int argc,char *argv[]) {
 	if (getenv("PGPASSWORD"))
 		dbpass = getenv("PGPASSWORD");
 
-	if (getenv("PGHOST"))
+	if ( (!getenv("PGHOST")) && (!getenv("PGHOSTADDR")) && (!dbhost)) {
+		dbhost = calloc((strlen("localhost") + 2),sizeof(char));
+		strcpy(dbhost,"localhost");
+	}
+
+	else if (getenv("PGHOST"))
 		dbhost = getenv("PGHOST");
 
-	if (getenv("PGHOSTADDR"))
+	else if (getenv("PGHOSTADDR"))
 		dbhost = getenv("PGHOSTADDR");
 
 	// trying the connect to the PostgresSQL server
@@ -285,7 +290,7 @@ int main(int argc,char *argv[]) {
 		for (c=0;c<strlen(buff);c++) {
 
 			if (k < 0) {
-				fprintf(stderr,"error - the number of columns is to much at line %d \n",linenum);
+				fprintf(stderr,"error - the number of columns is not consistant at line %d \n",linenum);
 				rcode=5;
 				break;
 			}

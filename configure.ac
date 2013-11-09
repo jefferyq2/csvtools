@@ -116,4 +116,5 @@ AM_CONDITIONAL([USE_SQLITE_H], [test "x$have_sqlite" = "xyes"])
 #AC_CONFIG_FILES([Makefile src/Makefile
 AC_OUTPUT([Makefile include/Makefile
 		   lib/Makefile
+		   man/Makefile
 		   src/Makefile])

@@ -1,2 +1,2 @@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = include lib src 
+SUBDIRS = include lib man src 

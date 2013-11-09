@@ -192,6 +192,23 @@ int main(int argc,char *argv[]) {
 	else if (getenv("CSV2LITECOLS"))
 		col_stmt = getenv("CSV2LITECOLS");
 
+	if ( (!getenv("CSV2LITEOUTPUT")) && (!ofile) ) {
+	
+		fprintf(stderr,"error - no output file specified\n");
+		Help(2);
+
+	}
+
+	else if (getenv("CSV2LITEOUTPUT"))
+		ofile = getenv("CSV2LITEOUTPUT");
+
+	else {
+		res = sqlite3_open(ofile,&conn);
+		if (res != 0)
+			fprintf(stderr,"the file \"%s\" can not be opened or writen\n",ofile);
+	}
+
+	
 	if ( (!getenv("CSV2LITETABLE")) && (!tname) ) {
 
 		fprintf(stderr,"error - destination table name not set\n");
@@ -201,16 +218,6 @@ int main(int argc,char *argv[]) {
 	else if (getenv("CSV2LITETABLE"))
 			tname = getenv("CSV2LITETABLE");
 	
-	if (!ofile) {
-		fprintf(stderr,"error - no output file specified\n");
-		Help(2);
-	}
-
-	else {
-		res = sqlite3_open(ofile,&conn);
-		if (res != 0)
-			fprintf(stderr,"the file \"%s\" can not be opened or writen\n",ofile);
-	}
 
 
 

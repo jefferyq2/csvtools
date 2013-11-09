@@ -62,10 +62,34 @@ Installation Instructions
 
 	$ ./configure --with-mysql
 
-    the same use cases is equivalent to '--with-pgsql' for PostgreSQL support and '--with-odbc'
-    for UNIXodbc support.
+    the 'configure' script checks for the 'mysql_config' to complete the CFLAGS and LIBS it
+    requires for compilation, please make sure the command is available in the root user PATH
 
-3.  All the Autotools Rules Apply
+3.  Configure with PostgreSQL
+    to enable PostgreSQL insert binary tool just run the 'configure' script with the option
+    of '--with-pgsql' and the 'configure' script will create the CFLAGS and the LIBS 
+    it needs for comlipation
+
+	$ ./configure --with-pgsql
+
+    before you run the 'configure' script please make sure that the binary 'pg_config' is
+    available to the compliation user and that the postgresql libs are available.
+
+4.  Configure with UNIXodbc
+    to configure the tools with UNIXodbc all you need to do is run the 'configure' 
+    command with the option of '--with-odbc' and the 'configure' script will auto 
+    complete all the necessary flags for compilation.
+
+	$ ./configure --with-odbc
+
+5.  Compiling all the Tools.
+    to make all of the CSVtools available upon compilation run the 'configure' command
+    with all of the 'with' available arguments
+
+	$ ./configure --with-odbc --with-mysql --with-pgsql
+
+
+6.  All the Autotools Rules Apply
     If you want to change the directory of the bin/ installation path or a new directory
     for the libraries you can use the 'configure --help' command to see what options are
     available for you convenience.

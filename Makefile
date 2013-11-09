@@ -80,8 +80,8 @@ host_triplet = x86_64-unknown-linux-gnu
 subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
-	$(srcdir)/config.h.in README compile config.guess config.sub \
-	depcomp install-sh missing ltmain.sh
+	$(srcdir)/config.h.in INSTALL README compile config.guess \
+	config.sub depcomp install-sh missing ltmain.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -222,11 +222,10 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-JSON_INCLUDE = /usr/include/json
 LD = /usr/bin/ld -m elf_x86_64
 LDFLAGS = 
 LIBOBJS = 
-LIBS = -ljson-c -lsqlite3 
+LIBS = -lsqlite3 -lodbc 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = 
 LN_S = ln -s
@@ -234,8 +233,8 @@ LTLIBOBJS =
 MAKEINFO = makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = /usr/bin/mkdir -p
-MYSQL_INCLUDE = 
-MYSQL_LIBS = 
+MYSQL_INCLUDE = -I/usr/include/mysql -g -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -grecord-gcc-switches  -m64 -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -fPIC  -g -static-libgcc -fno-omit-frame-pointer -fno-strict-aliasing  -DMY_PTHREAD_FASTMUTEX=1
+MYSQL_LIBS = -L/usr/lib64/mysql -lmysqlclient -lpthread -lz -lm -lssl -lcrypto -ldl
 NM = /usr/bin/nm -B
 NMEDIT = 
 OBJDUMP = objdump
@@ -250,8 +249,8 @@ PACKAGE_TARNAME = csvtools
 PACKAGE_URL = 
 PACKAGE_VERSION = 0.0.3
 PATH_SEPARATOR = :
-PG_INCLUDE = 
-PG_LIBS = 
+PG_INCLUDE = /usr/include
+PG_LIBS = /usr/lib64
 RANLIB = ranlib
 SED = /usr/bin/sed
 SET_MAKE = 
@@ -282,8 +281,8 @@ datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-have_mysql_config = 
-have_pg_config = 
+have_mysql_config = yes
+have_pg_config = yes
 host = x86_64-unknown-linux-gnu
 host_alias = 
 host_cpu = x86_64
@@ -313,7 +312,7 @@ top_build_prefix =
 top_builddir = .
 top_srcdir = .
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = include lib src 
+SUBDIRS = include lib man src 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 

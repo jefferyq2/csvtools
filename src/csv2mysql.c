@@ -63,7 +63,7 @@ int main(int argc,char *argv[]) {
 	MYSQL_ROW row;
 	int rcode=0,exline=0,linenum=0;
 	int k=0,i=0,colnum=0,quot_val=0;
-	int vopt=0,c;
+	int vopt=0,c,dbopt=0;
 	char col_seperator=',';
 	FILE *ifile = NULL;
 	char *dbuser=NULL,*dbpass=NULL;
@@ -166,15 +166,22 @@ int main(int argc,char *argv[]) {
 			tmyname = getenv("CSV2MYTABLE");
 
 		if ( (!getenv("CSV2MYDBNAME") ) && (!dbname) ) {
-			fprintf(stderr,"error - no MySQL DataBase specified\n\n");
+			fprintf(stderr,"no destination Database name specified Aborting\n");
 			Help();
-			exit(2);
+			exit(3);
 		}
 
 		else if (getenv("CSV2MYDBNAME"))
 			dbname = getenv("CSV2MYDBNAME");
 
-		if (getenv("MYSQL_HOST"))
+		if ( (!getenv("MYSQL_HOST") ) && (!dbhost) ) {
+		
+			dbopt = 1;
+			dbhost = calloc(strlen("localhost")+2,sizeof(char));
+			strcpy(dbhost,"localhost");		
+		}
+
+		else if (getenv("MYSQL_HOST"))
 			dbhost = getenv("MYSQL_HOST");
 
 		if (getenv("MYSQL_USER"))
@@ -336,6 +343,9 @@ int main(int argc,char *argv[]) {
 	fclose(ifile);
 	mysql_free_result(res);
 	mysql_close(conn);
+
+	if (dbopt == 1)
+		free(dbhost);
 
 	return rcode;
 }
