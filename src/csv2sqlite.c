@@ -7,11 +7,15 @@
 
 static int callback(void *data,int argc,char *argv[],char **colname) {
 
-	int rcode=0;
 	char **sql_res = (char **)data;
 	*sql_res = calloc(strlen(argv[0]),sizeof(char));
 	strcpy(*sql_res,argv[0]);
-	return rcode;
+	return 0;
+}
+
+static int print_schema(void *data,int argc,char *argv[],char **colname) {
+
+	return 0;
 }
 
 void Help(int exitcode)
@@ -22,8 +26,9 @@ void Help(int exitcode)
 	printf("\t\t -h - Display this manu\n");
 	printf("\t\t -f - set The CSV file to read from (Default: stdin)\n");
 	printf("\t\t -o - outfile name of the sqlite database (mandatory)\n");
-	printf("\t\t -c - Column's names - set the columns name (Mandatory)\n");
+	printf("\t\t -c - Column's names - set the columns name (Example: 'col1,col2,col3') \n");
 	printf("\t\t -t - Destantion Table Name (mandatory)\n");
+	printf("\t\t -l - list current table schema and exit \n");
 	printf(" \n");
 
 	exit(exitcode);
@@ -111,7 +116,7 @@ int main(int argc,char *argv[]) {
 	char *col_stmt=NULL,*tname=NULL,*ofile=NULL;
 	FILE *ifile=NULL;
 
-	while (( c = getopt (argc, argv , "vs:hf:o:m:c:t:y")) != -1 ) {
+	while (( c = getopt (argc, argv , "vs:hf:o:lc:t:y")) != -1 ) {
 
 		switch (c) {
 			
@@ -148,7 +153,7 @@ int main(int argc,char *argv[]) {
 				tname = optarg;
 			break;
 
-			case 'm':
+			case 'l':
 				
 				mopt++;;
 			break;
@@ -178,7 +183,7 @@ int main(int argc,char *argv[]) {
 	// checking for environment variables
 	
 	if ( mopt != 1) {
-		fprintf(stderr,"-c / -m - only one option should be specified\n");
+		fprintf(stderr,"-c / -g - only one option should be specified\n");
 		Help(1);
 	}
 	

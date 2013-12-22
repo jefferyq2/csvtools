@@ -1,7 +1,8 @@
 
 
-				csvtools 1.2 README
-			     =============================
+                                csvtools 1.0.55 README
+                              =============================
+
 
 Introduction
 ------------
@@ -17,23 +18,24 @@ PostgreSQL and ODBC.
 Tools Overview
 --------------
 
-csv2mysql -	A binary tool for inserting each of the CSV
-		line into the MySQL Database.
-		this tool has been tested with MariaDB as well
+csv2mysql -   A binary tool for inserting each of the CSV
+              line into the MySQL Database.
+              this tool has been tested with MariaDB as well
 
-csv2pgsql -	A binary tool for inserting each of the CSV
-		line in the the PostgreSQL Server Directly.
-		this binary tool has been tested with PostgreSQL 9.X
+csv2pgsql -   A binary tool for inserting each of the CSV
+              line in the the PostgreSQL Server Directly.
+              this binary tool has been tested with PostgreSQL 9.X
 
-csv2odbc - 	A very Unix tool for inserting the CSV files into
-		any database that provided a Driver for unixODBC.
-		This tool uses basic SQL commands that are suitable for
-		most of the available databases.
-		The tool has been test with Oracle,Mysql and PostgreSQL
-		Databases.
+csv2odbc -    A very Unix tool for inserting the CSV files into
+              any database that provided a Driver for unixODBC.
+              This tool uses basic SQL commands that are suitable for
+              most of the available databases.
+              The tool has been test with Oracle,Mysql and PostgreSQL
+              Databases.
 
-csv2sqlite -	A very simple tool for inserting CSV files into a prexsisting
-		SQLITE Database.
+csv2sqlite -  A very simple tool for inserting CSV files into a prexsisting
+              SQLITE Database.
+
 
 
 Documentation

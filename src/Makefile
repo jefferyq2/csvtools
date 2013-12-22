@@ -256,10 +256,10 @@ OTOOL64 =
 PACKAGE = csvtools
 PACKAGE_BUGREPORT = two.oes@gmail.com
 PACKAGE_NAME = csvtools
-PACKAGE_STRING = csvtools 0.0.3
+PACKAGE_STRING = csvtools 1.0.55
 PACKAGE_TARNAME = csvtools
 PACKAGE_URL = 
-PACKAGE_VERSION = 0.0.3
+PACKAGE_VERSION = 1.0.55
 PATH_SEPARATOR = :
 PG_INCLUDE = /usr/include
 PG_LIBS = /usr/lib64
@@ -268,11 +268,11 @@ SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
-VERSION = 0.0.3
-abs_builddir = /home/oren/Dropbox/projects/csvtools/src
-abs_srcdir = /home/oren/Dropbox/projects/csvtools/src
-abs_top_builddir = /home/oren/Dropbox/projects/csvtools
-abs_top_srcdir = /home/oren/Dropbox/projects/csvtools
+VERSION = 1.0.55
+abs_builddir = /home/oren/Dropbox/projects/csvtools-1.0.55/src
+abs_srcdir = /home/oren/Dropbox/projects/csvtools-1.0.55/src
+abs_top_builddir = /home/oren/Dropbox/projects/csvtools-1.0.55
+abs_top_srcdir = /home/oren/Dropbox/projects/csvtools-1.0.55
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_DUMPBIN = 
@@ -303,7 +303,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/oren/Dropbox/projects/csvtools/install-sh
+install_sh = ${SHELL} /home/oren/Dropbox/projects/csvtools-1.0.55/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -354,9 +354,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/Makefile
+	  $(AUTOMAKE) --foreign src/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

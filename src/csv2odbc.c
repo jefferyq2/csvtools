@@ -8,6 +8,12 @@
 #include <sqlext.h>
 #include <sqltypes.h>
 
+typedef struct {
+	unsigned int ver_opt:1;
+	unsigned int file_opt:1;
+	unsigned int list_opt:1;
+} arg_options;
+
 void tablecheck(char *col_stmt,char *tname,SQLRETURN sql_ret,SQLHSTMT stmt, int vopt) {
 
 char *tsql_q;
@@ -32,7 +38,7 @@ char *tsql_q;
 }
 
 
-void Help() {
+void Help(int rcode) {
 
 	printf("Usage:  csv2odbc\n");
 	printf("\t\t -v - Be Verbose when running the command\n");
@@ -42,13 +48,17 @@ void Help() {
 	printf("\t\t -d - DSN name - set by the odbc.ini file\n");
 	printf("\t\t -c - Column's names - set the columns name (Defualt: First Line)\n");
 	printf("\t\t -t - Destantion Table Name\n");
+	printf("\t\t -l - Listing Installed Data Sources\n");
 	printf("\n");
+	
+	exit(rcode);
 
 }
 
 int main(int argc,char *argv[]) {
 
-	int c=0,exline=0,rcode=0,fopt=0,vopt=0;
+	arg_options arg_opt = { 0 , 0 ,0 };
+	int c=0,exline=0,rcode=0;
 	int quot_val=0,i=0,k=0;
 	FILE *ifile = NULL;
 	char *dname = NULL,buff[MAX_LENGTH];
@@ -58,19 +68,30 @@ int main(int argc,char *argv[]) {
 	char col_seperator=',';
 	char *lenbuff=NULL;
 	int linenum=0,colnum=0;
+	char dsn[256];
+	char desc[256];
+	SQLSMALLINT dsn_ret;
+	SQLSMALLINT desc_ret;
+	SQLUSMALLINT direction;
+	
 	opterr = 0;
+
 	SQLHDBC dbc;
 	SQLHENV env;
 	SQLHSTMT stmt;
 	SQLRETURN ret;
 	SQLRETURN sql_ret;
 	
-	 while ((c = getopt (argc, argv, "hs:vf:d:t:c:")) != -1)
+
+	 while ((c = getopt (argc, argv, "hs:vlf:d:t:c:")) != -1)
 		switch (c) {
 
+			case 'l':
+				arg_opt.list_opt = 1;
+			break;
+
 			case 'h':
-				Help();
-				exit(0);
+				Help(0);
 			break;
 
 			case 'c':
@@ -83,7 +104,7 @@ int main(int argc,char *argv[]) {
 			case 'f':
 				if (ifile = fopen(optarg,"rt")){
 					printf("the file %s is o.k.\n",optarg);
-					fopt=1;
+					arg_opt.file_opt = 1;
 				}
 				else {
 					fprintf(stderr,"the file \"%s\" can not be opened\n",optarg);
@@ -98,7 +119,7 @@ int main(int argc,char *argv[]) {
 				tname = optarg;
 			break;
 			case 'v':
-				vopt=1;
+				arg_opt.ver_opt = 1;
 			break;
 			case '?':
                         if ( (optopt == 'f') || (optopt == 'd') || (optopt == 't') )
@@ -115,28 +136,31 @@ int main(int argc,char *argv[]) {
 			}
 
 			default:
-				Help();
-				exit(1);
+				Help(1);
 			break;
 				
 	}
 
-	if ((!getenv("C2ODSNAME")) && (!dname)) {
-		fprintf(stderr,"error - missing target DS name\n\n");
-		Help();
-		exit(3);
-	}
-	else if (getenv("C2ODSNAME"))
+	if ( arg_opt.list_opt == 0 ) {
+
+		if ((!getenv("C2ODSNAME")) && (!dname)) {
+			fprintf(stderr,"error - missing target DS name\n\n");
+			Help(3);
+		}
+	
+		else if (getenv("C2ODSNAME"))
 			dname = getenv("C2ODSNAME");
 
-	if ((!getenv("C2OTABLENAME")) && (!tname)) {
-		fprintf(stderr,"error - missing target table name\n\n");
-		Help();
-		exit(2);
-	}
-	else if (getenv("C2OTABLENAME"))
+		if ((!getenv("C2OTABLENAME")) && (!tname)) {
+			fprintf(stderr,"error - missing target table name\n\n");
+			Help(2);
+		}
+
+		else if (getenv("C2OTABLENAME"))
 			tname = getenv("C2OTABLENAME");
 	
+	}
+
 	// trying to connect to the Database 
 	
 
@@ -144,12 +168,25 @@ int main(int argc,char *argv[]) {
         SQLSetEnvAttr(env, SQL_ATTR_ODBC_VERSION, (void *) SQL_OV_ODBC3, 0);
         SQLAllocHandle(SQL_HANDLE_DBC, env, &dbc);
 
+	if ( arg_opt.list_opt == 1 ) {
+		
+		 direction = SQL_FETCH_FIRST;
+		while(SQL_SUCCEEDED(ret = SQLDataSources(env, direction,
+			dsn, sizeof(dsn), &dsn_ret,
+			desc, sizeof(desc), &desc_ret))) {
+		direction = SQL_FETCH_NEXT;
+		printf("Data Sources Name: [%s] \nDescription - %s\n", dsn, desc);
+		if (ret == SQL_SUCCESS_WITH_INFO) printf("\tdata truncation\n");
+		}
+
+		exit(0);
+	}
 
         SQLCHAR dsnstr[30] = "DSN=";
         strcat(dsnstr,dname);
         strcat(dsnstr,";");
 
-	if(vopt == 1)
+	if(arg_opt.ver_opt == 1)
 		printf("trying to connect to %s with odbc\n",dname);
         ret = SQLDriverConnect(dbc, NULL, dsnstr, SQL_NTS,
                                 NULL, 0, NULL, SQL_DRIVER_COMPLETE);
@@ -159,24 +196,24 @@ int main(int argc,char *argv[]) {
                 exit(2);
         }
 	else {
-		if(vopt == 1)
+		if(arg_opt.ver_opt == 1)
 			printf("the SQL connection is looking good\n");
 	}
 	ret = SQLAllocHandle(SQL_HANDLE_STMT, dbc, &stmt);
 
 	/// checking if a file has been select or to start listening to STDIN
 	
-	if(fopt == 0) {
+	if(arg_opt.file_opt == 0) {
 		ifile = stdin;
-		if(vopt == 1)
+		if(arg_opt.ver_opt == 1)
 			printf("listening to STDIN for input\n");
 	}
 
 	// checking if the columns names are from the -c option
 	
 	if (col_stmt != NULL) {
-		colnum = firstlinetst(col_stmt,vopt,col_seperator,&quot_val);
-		tablecheck(col_stmt,tname,sql_ret,stmt,vopt);
+		colnum = firstlinetst(col_stmt,arg_opt.ver_opt,col_seperator,&quot_val);
+		tablecheck(col_stmt,tname,sql_ret,stmt,arg_opt.ver_opt);
 	}
 
 	while( ((fgets(buff,MAX_LENGTH,ifile)) != NULL) ) {
@@ -190,11 +227,11 @@ int main(int argc,char *argv[]) {
 		if ( (linenum == 0) && (col_stmt == NULL)) {
 
 			chomp(buff);
-			colnum = firstlinetst(buff,vopt,col_seperator,&quot_val);
+			colnum = firstlinetst(buff,arg_opt.ver_opt,col_seperator,&quot_val);
 			col_stmt = (char *)calloc(strlen(buff),sizeof(char));
 			strcpy(col_stmt,buff);
 			
-			tablecheck(col_stmt,tname,sql_ret,stmt,vopt);
+			tablecheck(col_stmt,tname,sql_ret,stmt,arg_opt.ver_opt);
 			continue;
 		}
 
@@ -272,7 +309,7 @@ int main(int argc,char *argv[]) {
                         		exit(7);
                 		}
                 		
-			if (vopt == 1)
+			if (arg_opt.ver_opt == 1)
 				printf("%s\n",sql_q);
 
 
@@ -295,7 +332,7 @@ int main(int argc,char *argv[]) {
 		memset(buff,'\0',0);
 	}
 
-	if (vopt == 1)
+	if (arg_opt.ver_opt == 1)
 		printf("the number of lines is : %d \n",linenum);
 
 	SQLFreeHandle(SQL_HANDLE_DBC, dbc);
