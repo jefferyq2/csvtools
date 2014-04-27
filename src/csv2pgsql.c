@@ -12,8 +12,14 @@
 #include <unistd.h>
 #include "csvtools.h"
 
+typedef struct {
+	unsigned int ver_opt:1;
+	unsigned int file_opt:1;
+	unsigned int test_opt:1;
+} arg_options;
 
-void Help() {
+
+void Help(int rcode) {
 
 	printf("Usage:  csv2pgsql\n");
 	printf("\t\t -v - Be Verbose when running the command\n");
@@ -26,8 +32,10 @@ void Help() {
 	printf("\t\t -d - set the postgresql Database name\n");
 	printf("\t\t -c - Column's names - set the columns name (Defualt: First Line)\n");
 	printf("\t\t -t - Destantion Table Name\n");
+	printf("\t\t -T - test the Database connection\n");
 	printf("\n");
 
+	exit(rcode);
 }
 
 
@@ -66,8 +74,10 @@ char *tsql_q;
 
 int main(int argc,char *argv[]) {
 
+	arg_options arg_opt = { 0 , 0 ,0 };
+
 	char buff[MAX_LENGTH];
-	int i=0,k=0,c,rcode=0,vopt=0,fopt=0,quot_val=0;
+	int i=0,k=0,c,rcode=0,quot_val=0;
 	int colnum=0,linenum=0,exline=0;
 	char *col_stmt=NULL;
 	char col_seperator=',';
@@ -81,10 +91,14 @@ int main(int argc,char *argv[]) {
 	PGresult   *res;
 	PGnotify   *notify;
 
-	while ((c = getopt (argc, argv, "hs:vf:u:p:H:d:t:c:")) != -1)
+	while ((c = getopt (argc, argv, "hs:vTf:u:p:H:d:t:c:")) != -1)
 		switch (c) {
 			case 'h':
-				Help();
+				Help(0);
+			break;
+
+			case 'T':
+				arg_opt.test_opt=1;
 			break;
 
 			case 'c':
@@ -100,13 +114,13 @@ int main(int argc,char *argv[]) {
 			break;
 
 			case 'v':
-				vopt=1;
+				arg_opt.ver_opt=1;
 			break;
 			
 			case 'f':
 				if (ifile = fopen(optarg,"rt")){
                                         printf("the file %s is o.k.\n",optarg);
-                                        fopt=1;
+                                        arg_opt.file_opt=1;
                                 }
                                 else {
                                         fprintf(stderr,"the file \"%s\" can not be opened\n",optarg);
@@ -149,8 +163,7 @@ int main(int argc,char *argv[]) {
 			break;
 
 			default:
-				Help();
-				exit(1);		
+				Help(1);		
 			break;
 		}
 
@@ -158,8 +171,7 @@ int main(int argc,char *argv[]) {
 
 	if ( (!getenv("PGDATABASE")) && (!dbname) ) {
 		fprintf(stderr,"error - missing target DataBase name\n\n");
-                Help();
-                exit(3);
+                Help(3);
 
 	}
 
@@ -168,8 +180,7 @@ int main(int argc,char *argv[]) {
 
 	if ( (!getenv("CSV2PGTABLE") ) && (!tpgname) ) {
 		fprintf(stderr,"error - there is no destination table specified\n\n");
-		Help();
-		exit(4);
+		Help(4);
 	}
 
 	else if (getenv("CSV2PGTABLE"))
@@ -223,14 +234,32 @@ int main(int argc,char *argv[]) {
     	conn = PQconnectdb(conninfo);
 
 	/* Check to see that the backend connection was successfully made */
+
+	if ( arg_opt.test_opt == 1 )
+		printf("testing the Database connection\n");
+
 	if (PQstatus(conn) != CONNECTION_OK)
 	{
 		fprintf(stderr, "error - Connection to database failed: %s\n",PQerrorMessage(conn));
 		exitnacely(conn);
 	}
-	else if (vopt == 1)
+	else if ( (arg_opt.ver_opt == 1) || ( arg_opt.test_opt == 1 ) )
 		printf("the connection to PostgreSQL Database was successful\n");
 	
+	
+	if ( arg_opt.test_opt == 1 ) {
+		
+		if ( arg_opt.file_opt== 1)
+			fclose(ifile);
+
+	//	res = PQexec(conn, "END");
+		
+		PQclear(res);
+		PQfinish(conn);
+		free(conninfo);
+		return rcode;
+	}
+
 	PQclear(res);
 	res = PQexec(conn, "BEGIN");
 	if (PQresultStatus(res) != PGRES_COMMAND_OK)
@@ -240,9 +269,9 @@ int main(int argc,char *argv[]) {
 		exitnacely(conn);		
 	}
 
-	if(fopt == 0) {
+	if(arg_opt.file_opt == 0) {
 		ifile = stdin;
-		if(vopt == 1)
+		if(arg_opt.ver_opt == 1)
 			printf("listening to STDIN for input\n");
         }
 
@@ -251,8 +280,8 @@ int main(int argc,char *argv[]) {
         
 	
         if (col_stmt != NULL) {
-                colnum = firstlinetst(col_stmt,vopt,col_seperator,&quot_val);
-		tablecheck(col_stmt,tpgname,res,conn,vopt);
+                colnum = firstlinetst(col_stmt,arg_opt.ver_opt,col_seperator,&quot_val);
+		tablecheck(col_stmt,tpgname,res,conn,arg_opt.ver_opt);
         }
 
 	while( ((fgets(buff,MAX_LENGTH,ifile)) != NULL) ) {
@@ -263,10 +292,10 @@ int main(int argc,char *argv[]) {
 		if ( (linenum == 0) && (col_stmt == NULL)) {
 
                         chomp(buff);
-                        colnum = firstlinetst(buff,vopt,col_seperator,&quot_val);
+                        colnum = firstlinetst(buff,arg_opt.ver_opt,col_seperator,&quot_val);
                         col_stmt = (char *)calloc(strlen(buff),sizeof(char));
                         strcpy(col_stmt,buff);
-			tablecheck(col_stmt,tpgname,res,conn,vopt);
+			tablecheck(col_stmt,tpgname,res,conn,arg_opt.ver_opt);
 			continue;
 		}
 
@@ -348,7 +377,7 @@ int main(int argc,char *argv[]) {
 				PQclear(res);
 			}
 
-			if (vopt == 1)
+			if (arg_opt.ver_opt == 1)
 				printf("the sql : %s\n",sql_q);
 
 			free(collist);

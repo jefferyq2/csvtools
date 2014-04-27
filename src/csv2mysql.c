@@ -60,7 +60,7 @@ int main(int argc,char *argv[]) {
 	char *collist=NULL,*sql_q=NULL;
 	MYSQL *conn;
 	MYSQL_RES *res;
-	MYSQL_ROW row;
+	//MYSQL_ROW row;
 	int rcode=0,exline=0,linenum=0;
 	int k=0,i=0,colnum=0,quot_val=0;
 	int vopt=0,c,dbopt=0;
