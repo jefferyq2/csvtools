@@ -6,7 +6,15 @@
 #include "csvtools.h"
 #include <mysql.h>
 
-void Help() {
+typedef struct {
+	unsigned int ver_opt:1;
+	unsigned int file_opt:1;
+	unsigned int test_opt:1;
+	unsigned int db_opt:1;
+} arg_options;
+
+
+void Help(int rcode) {
 
         printf("Usage:  csv2mysql\n");
         printf("\t\t -v - Be Verbose when running the command\n");
@@ -18,9 +26,11 @@ void Help() {
         printf("\t\t -p - set the mysql user Password (Default: none)\n");
         printf("\t\t -d - set the mysql Database name\n");
         printf("\t\t -c - Column's names - set the columns name (Defualt: First Line)\n");
+        printf("\t\t -T - Run a Test for the Database connection\n");
         printf("\t\t -t - Destantion Table Name\n");
         printf("\n");
 
+	exit(rcode);
 }
 
 void exitnacely(MYSQL *conn) {
@@ -56,6 +66,8 @@ void tablecheck(char *col_stmt,char *tmyname,MYSQL_RES *res,MYSQL *conn,int vopt
 
 int main(int argc,char *argv[]) {
 	
+	arg_options arg_opt = { 0 , 0 ,0 ,0 };
+
 	char buff[MAX_LENGTH];
 	char *collist=NULL,*sql_q=NULL;
 	MYSQL *conn;
@@ -63,20 +75,24 @@ int main(int argc,char *argv[]) {
 	//MYSQL_ROW row;
 	int rcode=0,exline=0,linenum=0;
 	int k=0,i=0,colnum=0,quot_val=0;
-	int vopt=0,c,dbopt=0;
+	int c;
 	char col_seperator=',';
 	FILE *ifile = NULL;
 	char *dbuser=NULL,*dbpass=NULL;
 	char *dbhost=NULL,*dbname=NULL;
 	char *col_stmt=NULL,*tmyname=NULL;
 
-		while ((c = getopt (argc, argv, "hs:vf:u:p:H:d:t:c:")) != -1)
+		while ((c = getopt (argc, argv, "Ths:vf:u:p:H:d:t:c:")) != -1)
 		{
 			
 			switch (c) {
+
+				case 'T':
+					arg_opt.test_opt = 1;
+				break;
+
 				case 'h':
-					Help();
-					exit(0);
+					Help(0);
 				break;
 
 				case 's':
@@ -84,13 +100,13 @@ int main(int argc,char *argv[]) {
 				break;
 
 				case 'v':
-					vopt = 1;
+					arg_opt.ver_opt = 1;
 				break;
 
 				case 'f':
 					if (ifile = fopen(optarg,"rt")){
 						printf("the file %s is o.k.\n",optarg);
-						//fopt=1;
+						arg_opt.file_opt=1;
 					}
 
 					else {
@@ -143,8 +159,7 @@ int main(int argc,char *argv[]) {
 				break;
 
 				default:
-					Help();
-					exit(1);
+					Help(1);
 				break;
 			}
 		}
@@ -158,8 +173,7 @@ int main(int argc,char *argv[]) {
 
 		if ( (!getenv("CSV2MYTABLE") ) && (!tmyname) ) {
 			fprintf(stderr,"error - there is no destination table specified\n\n");
-			Help();
-			exit(2);
+			Help(2);
 		}
 
 		else if (getenv("CSV2MYTABLE"))
@@ -167,8 +181,7 @@ int main(int argc,char *argv[]) {
 
 		if ( (!getenv("CSV2MYDBNAME") ) && (!dbname) ) {
 			fprintf(stderr,"no destination Database name specified Aborting\n");
-			Help();
-			exit(3);
+			Help(3);
 		}
 
 		else if (getenv("CSV2MYDBNAME"))
@@ -176,7 +189,7 @@ int main(int argc,char *argv[]) {
 
 		if ( (!getenv("MYSQL_HOST") ) && (!dbhost) ) {
 		
-			dbopt = 1;
+			arg_opt.db_opt = 1;
 			dbhost = calloc(strlen("localhost")+2,sizeof(char));
 			strcpy(dbhost,"localhost");		
 		}
@@ -204,20 +217,35 @@ int main(int argc,char *argv[]) {
 			exitnacely(conn);
 		}		
 
-		else if (vopt == 1)
+		else if ( (arg_opt.ver_opt == 1) || (arg_opt.test_opt == 1) )
 			printf("the connection to the MySQL was successful\n");		
+
+		if (arg_opt.test_opt == 1) {
+		
+			if (arg_opt.file_opt == 1)
+				fclose(ifile);
+
+
+			mysql_free_result(res);
+			mysql_close(conn);
+
+        		if (arg_opt.db_opt == 1)
+				free(dbhost);
+
+			return rcode;
+		}
 
 		if (ifile == NULL) {
 			ifile = stdin;
-			if(vopt == 1)
+			if(arg_opt.ver_opt == 1)
 				printf("listening to STDIN for input\n");
 		}
 
 		// checking if the columns names are from the -c option
 
 		if (col_stmt != NULL) {
-			colnum = firstlinetst(col_stmt,vopt,col_seperator,&quot_val);
-			tablecheck(col_stmt,tmyname,res,conn,vopt);
+			colnum = firstlinetst(col_stmt,arg_opt.ver_opt,col_seperator,&quot_val);
+			tablecheck(col_stmt,tmyname,res,conn,arg_opt.ver_opt);
 		}
 		
 		while( ((fgets(buff,MAX_LENGTH,ifile)) != NULL) ) {
@@ -228,10 +256,10 @@ int main(int argc,char *argv[]) {
 			if ( (linenum == 0) && (col_stmt == NULL)) {
 
 				chomp(buff);
-				colnum = firstlinetst(buff,vopt,col_seperator,&quot_val);
+				colnum = firstlinetst(buff,arg_opt.ver_opt,col_seperator,&quot_val);
 				col_stmt = (char *)calloc(strlen(buff),sizeof(char));
 				strcpy(col_stmt,buff);
-				tablecheck(col_stmt,tmyname,res,conn,vopt);
+				tablecheck(col_stmt,tmyname,res,conn,arg_opt.ver_opt);
 				continue;
 			}
 
@@ -344,7 +372,7 @@ int main(int argc,char *argv[]) {
 	mysql_free_result(res);
 	mysql_close(conn);
 
-	if (dbopt == 1)
+	if (arg_opt.db_opt == 1)
 		free(dbhost);
 
 	return rcode;

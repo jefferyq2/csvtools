@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([csvtools], [1.0.58], [two.oes@gmail.com])
+AC_INIT([csvtools], [1.0.60], [two.oes@gmail.com])
 AM_INIT_AUTOMAKE
 AC_CONFIG_HEADERS([config.h])
 LT_PREREQ([2.2])
