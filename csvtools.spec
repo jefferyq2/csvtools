@@ -1,6 +1,6 @@
 Name:		csvtools
 Version:	1.0.60
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	a CSV parsing and database inserting tools
 
 Group:		System Environment/Base
