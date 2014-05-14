@@ -82,7 +82,10 @@ subdir = include
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(include_HEADERS)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -210,10 +213,10 @@ OTOOL64 =
 PACKAGE = csvtools
 PACKAGE_BUGREPORT = two.oes@gmail.com
 PACKAGE_NAME = csvtools
-PACKAGE_STRING = csvtools 1.0.58
+PACKAGE_STRING = csvtools 1.0.60
 PACKAGE_TARNAME = csvtools
 PACKAGE_URL = 
-PACKAGE_VERSION = 1.0.58
+PACKAGE_VERSION = 1.0.60
 PATH_SEPARATOR = :
 PG_INCLUDE = /usr/include
 PG_LIBS = /usr/lib64
@@ -222,11 +225,11 @@ SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
-VERSION = 1.0.58
-abs_builddir = /home/oren/Dropbox/projects/csvtools-1.0.58/include
-abs_srcdir = /home/oren/Dropbox/projects/csvtools-1.0.58/include
-abs_top_builddir = /home/oren/Dropbox/projects/csvtools-1.0.58
-abs_top_srcdir = /home/oren/Dropbox/projects/csvtools-1.0.58
+VERSION = 1.0.60
+abs_builddir = /home/oren/Dropbox/projects/csvtools-1.0.60/include
+abs_srcdir = /home/oren/Dropbox/projects/csvtools-1.0.60/include
+abs_top_builddir = /home/oren/Dropbox/projects/csvtools-1.0.60
+abs_top_srcdir = /home/oren/Dropbox/projects/csvtools-1.0.60
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_DUMPBIN = 
@@ -257,7 +260,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/oren/Dropbox/projects/csvtools-1.0.58/install-sh
+install_sh = ${SHELL} /home/oren/Dropbox/projects/csvtools-1.0.60/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -290,9 +293,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign include/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu include/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign include/Makefile
+	  $(AUTOMAKE) --gnu include/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

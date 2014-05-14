@@ -7,6 +7,8 @@ AM_INIT_AUTOMAKE
 AC_CONFIG_HEADERS([config.h])
 LT_PREREQ([2.2])
 LT_INIT([dlopen])
+AC_CONFIG_MACRO_DIR([m4])
+
 
 # Checks for programs.
 AC_PROG_CC
@@ -110,6 +112,8 @@ AM_CONDITIONAL([USE_PGSQL_H], [test "x$have_pgsql" = "xyes"])
 AM_CONDITIONAL([USE_MYSQL_H], [test "x$have_mysql" = "xyes"])
 AM_CONDITIONAL([USE_ODBC_H], [test "x$have_odbc" = "xyes"])
 AM_CONDITIONAL([USE_SQLITE_H], [test "x$have_sqlite" = "xyes"])
+AM_CONDITIONAL([USE_XML_H], [test "x$have_xml" = "xyes"])
+AM_CONDITIONAL([USE_JSON_H], [test "x$have_json" = "xyes"])
 
 ### Makefiles ###
 

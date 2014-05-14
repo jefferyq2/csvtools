@@ -46,16 +46,23 @@ typedef struct {
 void Help(int rcode) {
 
 	printf("Usage:  csv2pgsql\n");
-	printf("\t\t -v - Be Verbose when running the command\n");
-	printf("\t\t -s - the seperator between the columns (Default: \",\") \n");
-	printf("\t\t -h - Display this manu\n");
-	printf("\t\t -f - set The CSV file to read from (Default: stdin)\n");
-	printf("\t\t -H - set the postgresql Server hostname (Default: localhost)\n");
-	printf("\t\t -u - set the postgresql user login (Default: none)\n");
-	printf("\t\t -p - set the postgresql user Password (Default: none)\n");
-	printf("\t\t -d - set the postgresql Database name\n");
-	printf("\t\t -c - Column's names - set the columns name (Defualt: First Line)\n");
-	printf("\t\t -t - Destantion Table Name\n");
+	printf("\t\t -v -   Be Verbose when running the command\n\n");
+	printf("\t\t -s -  -s=CSV2PG_SEPERATOR \n\
+		\tthe seperator between the columns (Default: \",\") \n\n");
+	printf("\t\t -h -   Display this manu\n");
+	printf("\t\t -f -   Set The CSV Input file (Default: stdin)\n\n");
+	printf("\t\t -H -  -H=PGHOST / -H=PGHOSTADDR \n\
+		\tSet the postgresql Server hostname (Default: localhost)\n\n");
+	printf("\t\t -u -  -u=PGUSER \n\
+		\tset the postgresql user login (Default: none)\n\n");
+	printf("\t\t -p -  -p=PGPASSWORD \n\
+		\tset the postgresql user Password (Default: none)\n\n");
+	printf("\t\t -d -  -d=PGDATABASE\n\
+		\tset the postgresql Database name \n\n");
+	printf("\t\t -c -  -c=CSV2PGCOLUMNS \n\
+		\tColumn's names - set the columns name (Defualt: First Line)\n\n");
+	printf("\t\t -t -  -t=CSV2PGTABLE \n\
+		\tDestantion Table Name \n\n");
 	printf("\t\t -T - test the Database connection\n");
 	printf("\n");
 
@@ -226,6 +233,9 @@ int main(int argc,char *argv[]) {
 
 	else if (getenv("PGHOSTADDR"))
 		dbhost = getenv("PGHOSTADDR");
+
+	if (getenv("CSV2PG_SEPERATOR"))
+		col_seperator = getenv("CSV2PG_SEPERATOR");
 
 	// trying the connect to the PostgresSQL server
 	// this is working with a standard PostgreSQL C API

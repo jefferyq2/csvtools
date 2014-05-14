@@ -78,20 +78,29 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3) \
-	$(am__EXEEXT_4)
+bin_PROGRAMS = csvsplit$(EXEEXT) csvcombine$(EXEEXT) $(am__EXEEXT_1) \
+	$(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4) \
+	$(am__EXEEXT_5) $(am__EXEEXT_6)
+#
 @USE_ODBC_H_TRUE@am__append_1 = csv2odbc
 #
-@USE_MYSQL_H_TRUE@am__append_2 = csv2mysql
+@USE_XML_H_TRUE@am__append_2 = csv2xml
 #
-@USE_PGSQL_H_TRUE@am__append_3 = csv2pgsql
+@USE_JSON_H_TRUE@am__append_3 = csv2json
 #
-@USE_SQLITE_H_TRUE@am__append_4 = csv2sqlite
+@USE_MYSQL_H_TRUE@am__append_4 = csv2mysql
+#
+@USE_PGSQL_H_TRUE@am__append_5 = csv2pgsql
+#
+@USE_SQLITE_H_TRUE@am__append_6 = csv2sqlite
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -99,20 +108,29 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 @USE_ODBC_H_TRUE@am__EXEEXT_1 = csv2odbc$(EXEEXT)
-@USE_MYSQL_H_TRUE@am__EXEEXT_2 = csv2mysql$(EXEEXT)
-@USE_PGSQL_H_TRUE@am__EXEEXT_3 = csv2pgsql$(EXEEXT)
-@USE_SQLITE_H_TRUE@am__EXEEXT_4 = csv2sqlite$(EXEEXT)
+@USE_XML_H_TRUE@am__EXEEXT_2 = csv2xml$(EXEEXT)
+@USE_JSON_H_TRUE@am__EXEEXT_3 = csv2json$(EXEEXT)
+@USE_MYSQL_H_TRUE@am__EXEEXT_4 = csv2mysql$(EXEEXT)
+@USE_PGSQL_H_TRUE@am__EXEEXT_5 = csv2pgsql$(EXEEXT)
+@USE_SQLITE_H_TRUE@am__EXEEXT_6 = csv2sqlite$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
+am__csv2json_SOURCES_DIST = csv2json.c
+@USE_JSON_H_TRUE@am_csv2json_OBJECTS = csv2json-csv2json.$(OBJEXT)
+csv2json_OBJECTS = $(am_csv2json_OBJECTS)
+@USE_JSON_H_TRUE@csv2json_DEPENDENCIES = ../lib/libcsvtools.la
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
+csv2json_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2json_CFLAGS) \
+	$(CFLAGS) $(csv2json_LDFLAGS) $(LDFLAGS) -o $@
 am__csv2mysql_SOURCES_DIST = csv2mysql.c
 @USE_MYSQL_H_TRUE@am_csv2mysql_OBJECTS =  \
 @USE_MYSQL_H_TRUE@	csv2mysql-csv2mysql.$(OBJEXT)
 csv2mysql_OBJECTS = $(am_csv2mysql_OBJECTS)
 @USE_MYSQL_H_TRUE@csv2mysql_DEPENDENCIES = ../lib/libcsvtools.la
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
-am__v_lt_1 = 
 csv2mysql_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2mysql_CFLAGS) \
 	$(CFLAGS) $(csv2mysql_LDFLAGS) $(LDFLAGS) -o $@
@@ -139,6 +157,25 @@ csv2sqlite_OBJECTS = $(am_csv2sqlite_OBJECTS)
 csv2sqlite_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2sqlite_CFLAGS) \
 	$(CFLAGS) $(csv2sqlite_LDFLAGS) $(LDFLAGS) -o $@
+am__csv2xml_SOURCES_DIST = csv2xml.c
+@USE_XML_H_TRUE@am_csv2xml_OBJECTS = csv2xml-csv2xml.$(OBJEXT)
+csv2xml_OBJECTS = $(am_csv2xml_OBJECTS)
+@USE_XML_H_TRUE@csv2xml_DEPENDENCIES = ../lib/libcsvtools.la
+csv2xml_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csv2xml_CFLAGS) \
+	$(CFLAGS) $(csv2xml_LDFLAGS) $(LDFLAGS) -o $@
+am_csvcombine_OBJECTS = csvcombine-csvcombine.$(OBJEXT)
+csvcombine_OBJECTS = $(am_csvcombine_OBJECTS)
+csvcombine_DEPENDENCIES = ../lib/libcsvtools.la
+csvcombine_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csvcombine_CFLAGS) \
+	$(CFLAGS) $(csvcombine_LDFLAGS) $(LDFLAGS) -o $@
+am_csvsplit_OBJECTS = csvsplit-csvsplit.$(OBJEXT)
+csvsplit_OBJECTS = $(am_csvsplit_OBJECTS)
+csvsplit_DEPENDENCIES = ../lib/libcsvtools.la
+csvsplit_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(csvsplit_CFLAGS) \
+	$(CFLAGS) $(csvsplit_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -173,11 +210,14 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(csv2mysql_SOURCES) $(csv2odbc_SOURCES) \
-	$(csv2pgsql_SOURCES) $(csv2sqlite_SOURCES)
-DIST_SOURCES = $(am__csv2mysql_SOURCES_DIST) \
-	$(am__csv2odbc_SOURCES_DIST) $(am__csv2pgsql_SOURCES_DIST) \
-	$(am__csv2sqlite_SOURCES_DIST)
+SOURCES = $(csv2json_SOURCES) $(csv2mysql_SOURCES) $(csv2odbc_SOURCES) \
+	$(csv2pgsql_SOURCES) $(csv2sqlite_SOURCES) $(csv2xml_SOURCES) \
+	$(csvcombine_SOURCES) $(csvsplit_SOURCES)
+DIST_SOURCES = $(am__csv2json_SOURCES_DIST) \
+	$(am__csv2mysql_SOURCES_DIST) $(am__csv2odbc_SOURCES_DIST) \
+	$(am__csv2pgsql_SOURCES_DIST) $(am__csv2sqlite_SOURCES_DIST) \
+	$(am__csv2xml_SOURCES_DIST) $(csvcombine_SOURCES) \
+	$(csvsplit_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -325,10 +365,27 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CFLAGS = @CFLAGS@
 AM_LDFLAGS = 
+csvsplit_SOURCES = csvsplit.c
+csvsplit_CFLAGS = -I$(top_srcdir)/include
+csvsplit_LDFLAGS = 
+csvsplit_LDADD = ../lib/libcsvtools.la
+#
+csvcombine_SOURCES = csvcombine.c
+csvcombine_CFLAGS = -I$(top_srcdir)/include
+csvcombine_LDFLAGS = 
+csvcombine_LDADD = ../lib/libcsvtools.la
 @USE_ODBC_H_TRUE@csv2odbc_SOURCES = csv2odbc.c 
 @USE_ODBC_H_TRUE@csv2odbc_CFLAGS = -I$(top_srcdir)/include
 @USE_ODBC_H_TRUE@csv2odbc_LDFLAGS = -lodbc
 @USE_ODBC_H_TRUE@csv2odbc_LDADD = ../lib/libcsvtools.la
+@USE_XML_H_TRUE@csv2xml_SOURCES = csv2xml.c
+@USE_XML_H_TRUE@csv2xml_CFLAGS = -I$(top_srcdir)/include
+@USE_XML_H_TRUE@csv2xml_LDFLAGS = 
+@USE_XML_H_TRUE@csv2xml_LDADD = ../lib/libcsvtools.la
+@USE_JSON_H_TRUE@csv2json_SOURCES = csv2json.c
+@USE_JSON_H_TRUE@csv2json_CFLAGS = -I$(top_srcdir)/include
+@USE_JSON_H_TRUE@csv2json_LDFLAGS = 
+@USE_JSON_H_TRUE@csv2json_LDADD = ../lib/libcsvtools.la
 @USE_MYSQL_H_TRUE@csv2mysql_SOURCES = csv2mysql.c 
 @USE_MYSQL_H_TRUE@csv2mysql_CFLAGS = -I$(top_srcdir)/include $(MYSQL_INCLUDE)
 @USE_MYSQL_H_TRUE@csv2mysql_LDFLAGS = $(MYSQL_LIBS)
@@ -354,9 +411,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign src/Makefile
+	  $(AUTOMAKE) --gnu src/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -425,6 +482,10 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
+csv2json$(EXEEXT): $(csv2json_OBJECTS) $(csv2json_DEPENDENCIES) $(EXTRA_csv2json_DEPENDENCIES) 
+	@rm -f csv2json$(EXEEXT)
+	$(AM_V_CCLD)$(csv2json_LINK) $(csv2json_OBJECTS) $(csv2json_LDADD) $(LIBS)
+
 csv2mysql$(EXEEXT): $(csv2mysql_OBJECTS) $(csv2mysql_DEPENDENCIES) $(EXTRA_csv2mysql_DEPENDENCIES) 
 	@rm -f csv2mysql$(EXEEXT)
 	$(AM_V_CCLD)$(csv2mysql_LINK) $(csv2mysql_OBJECTS) $(csv2mysql_LDADD) $(LIBS)
@@ -441,16 +502,32 @@ csv2sqlite$(EXEEXT): $(csv2sqlite_OBJECTS) $(csv2sqlite_DEPENDENCIES) $(EXTRA_cs
 	@rm -f csv2sqlite$(EXEEXT)
 	$(AM_V_CCLD)$(csv2sqlite_LINK) $(csv2sqlite_OBJECTS) $(csv2sqlite_LDADD) $(LIBS)
 
+csv2xml$(EXEEXT): $(csv2xml_OBJECTS) $(csv2xml_DEPENDENCIES) $(EXTRA_csv2xml_DEPENDENCIES) 
+	@rm -f csv2xml$(EXEEXT)
+	$(AM_V_CCLD)$(csv2xml_LINK) $(csv2xml_OBJECTS) $(csv2xml_LDADD) $(LIBS)
+
+csvcombine$(EXEEXT): $(csvcombine_OBJECTS) $(csvcombine_DEPENDENCIES) $(EXTRA_csvcombine_DEPENDENCIES) 
+	@rm -f csvcombine$(EXEEXT)
+	$(AM_V_CCLD)$(csvcombine_LINK) $(csvcombine_OBJECTS) $(csvcombine_LDADD) $(LIBS)
+
+csvsplit$(EXEEXT): $(csvsplit_OBJECTS) $(csvsplit_DEPENDENCIES) $(EXTRA_csvsplit_DEPENDENCIES) 
+	@rm -f csvsplit$(EXEEXT)
+	$(AM_V_CCLD)$(csvsplit_LINK) $(csvsplit_OBJECTS) $(csvsplit_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csv2json-csv2json.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csv2mysql-csv2mysql.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csv2odbc-csv2odbc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csv2pgsql-csv2pgsql.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csv2sqlite-csv2sqlite.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csv2xml-csv2xml.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csvcombine-csvcombine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csvsplit-csvsplit.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -472,6 +549,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+csv2json-csv2json.o: csv2json.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2json_CFLAGS) $(CFLAGS) -MT csv2json-csv2json.o -MD -MP -MF $(DEPDIR)/csv2json-csv2json.Tpo -c -o csv2json-csv2json.o `test -f 'csv2json.c' || echo '$(srcdir)/'`csv2json.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2json-csv2json.Tpo $(DEPDIR)/csv2json-csv2json.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csv2json.c' object='csv2json-csv2json.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2json_CFLAGS) $(CFLAGS) -c -o csv2json-csv2json.o `test -f 'csv2json.c' || echo '$(srcdir)/'`csv2json.c
+
+csv2json-csv2json.obj: csv2json.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2json_CFLAGS) $(CFLAGS) -MT csv2json-csv2json.obj -MD -MP -MF $(DEPDIR)/csv2json-csv2json.Tpo -c -o csv2json-csv2json.obj `if test -f 'csv2json.c'; then $(CYGPATH_W) 'csv2json.c'; else $(CYGPATH_W) '$(srcdir)/csv2json.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2json-csv2json.Tpo $(DEPDIR)/csv2json-csv2json.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csv2json.c' object='csv2json-csv2json.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2json_CFLAGS) $(CFLAGS) -c -o csv2json-csv2json.obj `if test -f 'csv2json.c'; then $(CYGPATH_W) 'csv2json.c'; else $(CYGPATH_W) '$(srcdir)/csv2json.c'; fi`
 
 csv2mysql-csv2mysql.o: csv2mysql.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2mysql_CFLAGS) $(CFLAGS) -MT csv2mysql-csv2mysql.o -MD -MP -MF $(DEPDIR)/csv2mysql-csv2mysql.Tpo -c -o csv2mysql-csv2mysql.o `test -f 'csv2mysql.c' || echo '$(srcdir)/'`csv2mysql.c
@@ -528,6 +619,48 @@ csv2sqlite-csv2sqlite.obj: csv2sqlite.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csv2sqlite.c' object='csv2sqlite-csv2sqlite.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2sqlite_CFLAGS) $(CFLAGS) -c -o csv2sqlite-csv2sqlite.obj `if test -f 'csv2sqlite.c'; then $(CYGPATH_W) 'csv2sqlite.c'; else $(CYGPATH_W) '$(srcdir)/csv2sqlite.c'; fi`
+
+csv2xml-csv2xml.o: csv2xml.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2xml_CFLAGS) $(CFLAGS) -MT csv2xml-csv2xml.o -MD -MP -MF $(DEPDIR)/csv2xml-csv2xml.Tpo -c -o csv2xml-csv2xml.o `test -f 'csv2xml.c' || echo '$(srcdir)/'`csv2xml.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2xml-csv2xml.Tpo $(DEPDIR)/csv2xml-csv2xml.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csv2xml.c' object='csv2xml-csv2xml.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2xml_CFLAGS) $(CFLAGS) -c -o csv2xml-csv2xml.o `test -f 'csv2xml.c' || echo '$(srcdir)/'`csv2xml.c
+
+csv2xml-csv2xml.obj: csv2xml.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2xml_CFLAGS) $(CFLAGS) -MT csv2xml-csv2xml.obj -MD -MP -MF $(DEPDIR)/csv2xml-csv2xml.Tpo -c -o csv2xml-csv2xml.obj `if test -f 'csv2xml.c'; then $(CYGPATH_W) 'csv2xml.c'; else $(CYGPATH_W) '$(srcdir)/csv2xml.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csv2xml-csv2xml.Tpo $(DEPDIR)/csv2xml-csv2xml.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csv2xml.c' object='csv2xml-csv2xml.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csv2xml_CFLAGS) $(CFLAGS) -c -o csv2xml-csv2xml.obj `if test -f 'csv2xml.c'; then $(CYGPATH_W) 'csv2xml.c'; else $(CYGPATH_W) '$(srcdir)/csv2xml.c'; fi`
+
+csvcombine-csvcombine.o: csvcombine.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csvcombine_CFLAGS) $(CFLAGS) -MT csvcombine-csvcombine.o -MD -MP -MF $(DEPDIR)/csvcombine-csvcombine.Tpo -c -o csvcombine-csvcombine.o `test -f 'csvcombine.c' || echo '$(srcdir)/'`csvcombine.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csvcombine-csvcombine.Tpo $(DEPDIR)/csvcombine-csvcombine.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csvcombine.c' object='csvcombine-csvcombine.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csvcombine_CFLAGS) $(CFLAGS) -c -o csvcombine-csvcombine.o `test -f 'csvcombine.c' || echo '$(srcdir)/'`csvcombine.c
+
+csvcombine-csvcombine.obj: csvcombine.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csvcombine_CFLAGS) $(CFLAGS) -MT csvcombine-csvcombine.obj -MD -MP -MF $(DEPDIR)/csvcombine-csvcombine.Tpo -c -o csvcombine-csvcombine.obj `if test -f 'csvcombine.c'; then $(CYGPATH_W) 'csvcombine.c'; else $(CYGPATH_W) '$(srcdir)/csvcombine.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csvcombine-csvcombine.Tpo $(DEPDIR)/csvcombine-csvcombine.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csvcombine.c' object='csvcombine-csvcombine.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csvcombine_CFLAGS) $(CFLAGS) -c -o csvcombine-csvcombine.obj `if test -f 'csvcombine.c'; then $(CYGPATH_W) 'csvcombine.c'; else $(CYGPATH_W) '$(srcdir)/csvcombine.c'; fi`
+
+csvsplit-csvsplit.o: csvsplit.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csvsplit_CFLAGS) $(CFLAGS) -MT csvsplit-csvsplit.o -MD -MP -MF $(DEPDIR)/csvsplit-csvsplit.Tpo -c -o csvsplit-csvsplit.o `test -f 'csvsplit.c' || echo '$(srcdir)/'`csvsplit.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csvsplit-csvsplit.Tpo $(DEPDIR)/csvsplit-csvsplit.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csvsplit.c' object='csvsplit-csvsplit.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csvsplit_CFLAGS) $(CFLAGS) -c -o csvsplit-csvsplit.o `test -f 'csvsplit.c' || echo '$(srcdir)/'`csvsplit.c
+
+csvsplit-csvsplit.obj: csvsplit.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csvsplit_CFLAGS) $(CFLAGS) -MT csvsplit-csvsplit.obj -MD -MP -MF $(DEPDIR)/csvsplit-csvsplit.Tpo -c -o csvsplit-csvsplit.obj `if test -f 'csvsplit.c'; then $(CYGPATH_W) 'csvsplit.c'; else $(CYGPATH_W) '$(srcdir)/csvsplit.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/csvsplit-csvsplit.Tpo $(DEPDIR)/csvsplit-csvsplit.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='csvsplit.c' object='csvsplit-csvsplit.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(csvsplit_CFLAGS) $(CFLAGS) -c -o csvsplit-csvsplit.obj `if test -f 'csvsplit.c'; then $(CYGPATH_W) 'csvsplit.c'; else $(CYGPATH_W) '$(srcdir)/csvsplit.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

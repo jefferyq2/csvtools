@@ -57,7 +57,7 @@
 #define PACKAGE_NAME "csvtools"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "csvtools 1.0.58"
+#define PACKAGE_STRING "csvtools 1.0.60"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "csvtools"
@@ -66,7 +66,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.0.58"
+#define PACKAGE_VERSION "1.0.60"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -84,4 +84,4 @@
 #define USE_SQLITE_H 1
 
 /* Version number of package */
-#define VERSION "1.0.58"
+#define VERSION "1.0.60"
