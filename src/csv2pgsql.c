@@ -235,7 +235,7 @@ int main(int argc,char *argv[]) {
 		dbhost = getenv("PGHOSTADDR");
 
 	if (getenv("CSV2PG_SEPERATOR"))
-		col_seperator = getenv("CSV2PG_SEPERATOR");
+		strncpy(&col_seperator,getenv("CSV2PG_SEPERATOR"),1);
 
 	// trying the connect to the PostgresSQL server
 	// this is working with a standard PostgreSQL C API

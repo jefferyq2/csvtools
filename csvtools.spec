@@ -1,5 +1,5 @@
 Name:		csvtools
-Version:	1.0.60
+Version:	1.1.60
 Release:	2%{?dist}
 Summary:	a CSV parsing and database inserting tools
 

@@ -76,11 +76,13 @@ void Help(int rcode) {
 
 int main(int argc,char *argv[]) {
 
-	int c,rcode=0,fsize=0;
-	long int numLines=10000;
-	char seperator=NULL;
+	int c,rcode=0;
+	long int numLines=10000, fsize=5;
+	char seperator='\0';
 	char *col_stmt=NULL,*opName=NULL;
+	char *ifname=NULL,*ofname=NULL;
 	FILE *ofile=NULL, *ifile=NULL;
+	short int prefix_select=0;
 
 	arg_options argopts = { 0 , 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -91,7 +93,7 @@ int main(int argc,char *argv[]) {
 			break;
 			
 			case 's':
-				seperator = optarg;
+				seperator = optarg[0];
 			break;
 
 			case 'h':
@@ -107,28 +109,20 @@ int main(int argc,char *argv[]) {
 			break;
 
 			case 'f':
-
+				ifname = optarg;
 				if (ifile = fopen(optarg,"rt")){
-					printf("the file %s is o.k.\n",optarg);
+					printf("the file %s is o.k.\n",ifname);
 					argopts.ifile_opt = 1;
 				}
 				else {
-					fprintf(stderr,"the file \"%s\" can not be opened\n",optarg);
+					fprintf(stderr,"the file \"%s\" can not be opened\n",ifname);
 					exit(1);
 				}
 
 			break;
 
 			case 'o':
-
-				if (ofile = fopen(optarg,"wt")){
-					printf("the file %s is o.k.\n",optarg);
-					argopts.ofile_opt = 1;
-				}
-				else {
-					fprintf(stderr,"the file \"%s\" can not be written\n",optarg);
-					exit(1);
-				}
+				ofname = optarg;
 
 			break;
 		
@@ -164,6 +158,29 @@ int main(int argc,char *argv[]) {
 		fprintf(stderr,"only one of the arguments should be specified ( -n  \\ -a) \n");
 		Help(2);
 	}
+	else if ( argopts.alph_opt == 1 )
+		fsize = fsize * 1024;
+
+	if (argopts.alph_opt == 1 )
+		prefix_select = 1;
+	else
+		prefix_select = 0;
+
+	if (getenv("CSVS_SEPERATOR"))
+		strncpy(&seperator,getenv("CSVS_SEPERATOR"),1);
+
+	if (getenv("CSVS_OUTPUT"))
+		ofname = getenv("CSVS_OUTPUT");
+
+	if (getenv("CSVS_LINE_NUMBER"))
+		numLines = atoi(getenv("CSVS_LINE_NUMBER"));
+
+	if ( (getenv("CSVS_FILE_SIZE")) && (!getenv("CSVS_LINE_NUMBER")) ) 
+		fsize = atoi(getenv("CSVS_FILE_SIZE")) * 1024;
+	
+	if ( getenv("CSVS_COLUMNS_NAME") )
+		col_stmt = getenv("CSVS_COLUMNS_NAME");	
+	
 	
    return rcode;
 }
