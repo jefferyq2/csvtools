@@ -40,7 +40,7 @@ const int csvobjnum(char *csvLine,char delimiter,int *quotation_val) {
                                 *quotation_val=0;
                 }
 
-		if ((csvLine[i]==delimiter) && (*quotation_val == 0))
+		if ((csvLine[i] == delimiter) && (*quotation_val == 0))
 			objnum++;
 	}
 	return objnum;
@@ -67,6 +67,8 @@ void rplccomma(char* csvLine,char delimiter) {
 int firstlinetst (char* firstLine,int vopt,char col_seperator,int *quot_val) {
         int colnum=0;
         nospaces(firstLine);
+
+	if (vopt == 1)
 
                         if (col_seperator != ',') {
                                 colnum = csvobjnum(firstLine,col_seperator,quot_val);

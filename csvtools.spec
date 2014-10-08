@@ -1,6 +1,6 @@
 Name:		csvtools
 Version:	1.1.60
-Release:	2%{?dist}
+Release:	1%{?dist}
 Summary:	a CSV parsing and database inserting tools
 
 Group:		System Environment/Base
@@ -9,7 +9,7 @@ URL:		None
 Source0:	%{name}-%{version}.tar.gz
 
 BuildRequires:  mysql-devel postgresql-devel unixODBC-devel sqlite-devel
-Requires:	postgresql-libs unixODBC mysql-libs sqlite
+Requires:	csvtools-libs postgresql-libs unixODBC mysql-libs sqlite
 
 %description
 the csvtools are a set of tools design to enable the
@@ -51,7 +51,17 @@ install -m 755 -d %{buildroot}/%{_mandir}
 
 #rm -rf %{buildroot}
 
-%files
+#%package -n csvtools
+#Summary: a CSV parsing and database inserting binary tools
+#Requires: csvtools-libs
+#%description -n csvtools
+#the set of the binary toosl to be uses with the csvtools 
+#package.
+#the tools are csv2mysql , csv2pgsql , csv2odbc , csv2sqlite
+#csvcombine and csvsplit
+
+%files 
+#%files -n csvtools
 %{_bindir}/csv2mysql
 %{_bindir}/csv2pgsql
 %{_bindir}/csv2odbc
@@ -64,6 +74,15 @@ install -m 755 -d %{buildroot}/%{_mandir}
 %{_mandir}/man1/csv2sqlite.1.gz
 %{_mandir}/man1/csvsplit.1.gz
 %{_mandir}/man1/csvcombine.1.gz
+
+%package -n csvtools-libs
+Summary: A set of libraries for the csvtools package
+
+%description -n csvtools-libs
+a set of libraries and a header file for C to be used
+by the csvtools binary
+
+%files -n csvtools-libs
 %{_includedir}/csvtools.h
 %{_libdir}/libcsvtools.a
 %{_libdir}/libcsvtools.la
@@ -76,5 +95,9 @@ install -m 755 -d %{buildroot}/%{_mandir}
 
 
 %changelog
+* Sun Jun 15 2014 Oren Oichman  <two.oes@gmail.com> 1.1.60-1
+- spiting the packages of the binary and the libraries
+
 * Tue May 13 2014 Oren Oichman 	<two.oes@gmail.com> 1.1.60-1
 - adding the csvplit and the csvcombine tools to the main RPM
+

@@ -191,7 +191,7 @@ LTLIBOBJS =
 MAKEINFO = makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = /usr/bin/mkdir -p
-MYSQL_INCLUDE = -I/usr/include/mysql -g -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -grecord-gcc-switches  -m64 -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -fPIC  -g -static-libgcc -fno-omit-frame-pointer -fno-strict-aliasing  -DMY_PTHREAD_FASTMUTEX=1
+MYSQL_INCLUDE = -I/usr/include/mysql -g -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches  -m64 -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -fPIC  -g -static-libgcc -fno-omit-frame-pointer -fno-strict-aliasing
 MYSQL_LIBS = -L/usr/lib64/mysql -lmysqlclient -lpthread -lz -lm -lssl -lcrypto -ldl
 NM = /usr/bin/nm -B
 NMEDIT = 
@@ -202,10 +202,10 @@ OTOOL64 =
 PACKAGE = csvtools
 PACKAGE_BUGREPORT = two.oes@gmail.com
 PACKAGE_NAME = csvtools
-PACKAGE_STRING = csvtools 1.0.60
+PACKAGE_STRING = csvtools 1.1.60
 PACKAGE_TARNAME = csvtools
 PACKAGE_URL = 
-PACKAGE_VERSION = 1.0.60
+PACKAGE_VERSION = 1.1.60
 PATH_SEPARATOR = :
 PG_INCLUDE = /usr/include
 PG_LIBS = /usr/lib64
@@ -214,11 +214,11 @@ SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
-VERSION = 1.0.60
-abs_builddir = /home/oren/Dropbox/projects/csvtools-1.0.60/man
-abs_srcdir = /home/oren/Dropbox/projects/csvtools-1.0.60/man
-abs_top_builddir = /home/oren/Dropbox/projects/csvtools-1.0.60
-abs_top_srcdir = /home/oren/Dropbox/projects/csvtools-1.0.60
+VERSION = 1.1.60
+abs_builddir = /home/oren/Dropbox/projects/csvtools-1.1.60/man
+abs_srcdir = /home/oren/Dropbox/projects/csvtools-1.1.60/man
+abs_top_builddir = /home/oren/Dropbox/projects/csvtools-1.1.60
+abs_top_srcdir = /home/oren/Dropbox/projects/csvtools-1.1.60
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_DUMPBIN = 
@@ -249,7 +249,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/oren/Dropbox/projects/csvtools-1.0.60/install-sh
+install_sh = ${SHELL} /home/oren/Dropbox/projects/csvtools-1.1.60/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -269,8 +269,8 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-man1_MANS = $(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4)
+man1_MANS = csvsplit.gz csvcombine.gz $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4)
 all: all-am
 
 .SUFFIXES:

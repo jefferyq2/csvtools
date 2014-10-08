@@ -1,4 +1,4 @@
-man1_MANS =
+man1_MANS = csvsplit.gz csvcombine.gz
 if USE_ODBC_H
 man1_MANS += csv2odbc.gz
 endif
