@@ -36,6 +36,21 @@ csv2odbc -    A very Unix tool for inserting the CSV files into
 csv2sqlite -  A very simple tool for inserting CSV files into a prexsisting
               SQLITE Database.
 
+csv2json -    a binary tool to generate Json based files from the CSV file
+	      with easy options to run as a batch
+
+csv2mongo -   inserting data from a CSV file to a MongoDB Database , this
+	      require a preconfigured database for inserting
+
+csv2xml -     very easy and fast tool to migrating a CSV file into an XML file
+
+csvcombine -  a binary files which takes several CSV file and combines it into
+              a single CSV file
+
+csvsplit -    use a preconfigured paramaters to split the CSV file into several
+              files which is based on user define parameters
+
+
 
 
 Documentation
